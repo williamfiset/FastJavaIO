@@ -144,9 +144,69 @@ public class InputReaderTests {
   }
 
   @Test
-  public void testReadString1() {
+  public void testReadString1()  throws IOException {
 
+    String str = "a b c";
+    InputReader in = getReader(str);
     
+    assertEquals("a", in.readStr());
+    assertEquals("b", in.readStr());
+    assertEquals("c", in.readStr());
+
+    str = "  a   b   c   ";
+    in  = getReader(str);
+    assertEquals("a", in.readStr());
+    assertEquals("b", in.readStr());
+    assertEquals("c", in.readStr());
+
+    str = "  abcde   bb   ccc   ";
+    in  = getReader(str);
+    assertEquals("abcde", in.readStr());
+    assertEquals("bb", in.readStr());
+    assertEquals("ccc", in.readStr());
+
+  }
+
+  @Test(expected=java.util.InputMismatchException.class)
+  public void testReadStringExtremes1() throws IOException {
+    String str = "";
+    InputReader in = getReader(str);
+    assertEquals("", in.readStr());
+  }
+
+  @Test(expected=java.util.InputMismatchException.class)
+  public void testReadStringExtremes2() throws IOException {
+    String str = "\n";
+    InputReader in = getReader(str);
+    in.readStr();
+  }
+
+  @Test(expected=java.util.InputMismatchException.class)
+  public void testReadStringExtremes3() throws IOException {
+    String str = " ";
+    InputReader in = getReader(str);
+    in.readStr();
+  }
+
+  @Test(expected=java.util.InputMismatchException.class)
+  public void testReadStringExtremes4() throws IOException {
+    String str = "\n\n\n\n\n";
+    InputReader in = getReader(str);
+    in.readStr();
+  }
+
+  @Test
+  public void testReadStringExtremes()  throws IOException {
+
+    String str = "\n\n\nabcdef\n\n\n";
+    InputReader in = getReader(str);
+    assertEquals("abcdef", in.readStr());
+
+    str = "\n\n\n    abcdef    \n\n\n";
+    in = getReader(str);
+    assertEquals("abcdef", in.readStr());
+
+
   }
 
 }
