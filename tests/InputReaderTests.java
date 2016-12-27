@@ -167,6 +167,31 @@ public class InputReaderTests {
 
   }
 
+  @Test
+  public void testReadStringNewLines1()  throws IOException {
+
+    String str = "a\n b\n c\n";
+    InputReader in = getReader(str);
+    
+    assertEquals("a", in.readStr());
+    assertEquals("b", in.readStr());
+    assertEquals("c", in.readStr());
+
+    str = "  a \n  \nb \n  c\n  \n \n d ";
+    in  = getReader(str);
+    assertEquals("a", in.readStr());
+    assertEquals("b", in.readStr());
+    assertEquals("c", in.readStr());
+    assertEquals("d", in.readStr());
+
+    str = "  \n \n abcde \n \n bb  \n \nccc\n   ";
+    in  = getReader(str);
+    assertEquals("abcde", in.readStr());
+    assertEquals("bb", in.readStr());
+    assertEquals("ccc", in.readStr());
+
+  }
+
   @Test(expected=java.util.InputMismatchException.class)
   public void testReadStringExtremes1() throws IOException {
     String str = "";
@@ -206,6 +231,86 @@ public class InputReaderTests {
     in = getReader(str);
     assertEquals("abcdef", in.readStr());
 
+  }
+
+  @Test
+  public void testReadLine() throws IOException {
+
+
+
+  }
+
+  @Test
+  public void testReadLineExtremes() throws IOException {
+
+    
+
+  }
+
+  @Test
+  public void testReadLineDifferentBufferSizes() throws IOException {
+
+    
+
+  }
+
+  @Test
+  public void testReadAll() throws IOException {
+
+    String s = "\nhello   world\n";
+    InputReader in = getReader(s);
+    assertEquals(s, in.readAll());
+
+    s = "1234567890";
+    in = getReader(s);
+    assertEquals(s, in.readAll());
+
+    s = "\n \n  r \ne  a\nd\nme\n   \n ";
+    in = getReader(s);
+    assertEquals(s, in.readAll());
+
+    s = "!@#$%^&*( sfsdjkfhbsfpqpwouwijt59yrh54jge4t439f     \n ruiwghfisbfsfmvdkjf dfgu545$%^$% <>,./ ERwerWERwrwEhGHGsew \n \n    rkeferWRWERWE ";
+    in = getReader(s);
+    assertEquals(s, in.readAll());
+
+  }
+
+  @Test
+  public void testReadAllExtremes() throws IOException {
+
+    String s = "";
+    InputReader in = getReader(s);
+    assertEquals(s, in.readAll());
+
+    s = " ";
+    in = getReader(s);
+    assertEquals(s, in.readAll());    
+
+    s = "\n";
+    in = getReader(s);
+    assertEquals(s, in.readAll());
+
+  }
+
+  @Test
+  public void testReadAllDifferentBufferSizes() throws IOException {
+
+    
+    
+  }
+
+  @Test
+  public void combinedStringTest1() {
+
+  }
+
+  @Test
+  public void combinedStringTest2() {
+
+  }
+  
+  @Test
+  public void combinedStringTest3() {
 
   }
 
