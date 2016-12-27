@@ -141,7 +141,13 @@ public class InputReaderTests {
     assertEquals( Long.MAX_VALUE-1, in.readLong() );
     assertEquals( Long.MIN_VALUE+1, in.readLong() );
 
-  }  
+  }
+
+  @Test
+  public void testReadString1() {
+
+    
+  }
 
 }
 

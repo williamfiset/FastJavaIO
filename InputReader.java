@@ -1,17 +1,24 @@
-import java.util.InputMismatchException;
 import java.io.InputStream;
 import java.io.IOException;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.util.InputMismatchException;
 
 public class InputReader {
   
-  final byte[] buf; 
-  final InputStream stream;
-  static final int DEFAULT_BUFFER_SZ = 65536; // 2^16
-  static final InputStream DEFAULT_STREAM = System.in;
+  private final byte[] buf; 
+  private final InputStream stream;
+  private static final int DEFAULT_BUFFER_SZ = 10; // 65536; // 2^16
+  private static final InputStream DEFAULT_STREAM = System.in;
 
-  int charIndex, numChars;
+  private static final int EOF = -1; // End Of File (EOF)
+  private static final int NL  = 10; // New Line (NL)
+  private static final int SP  = 32; // Space character (SP)
+
+  private int buffer_sz, buf_index, num_bytes_read;
   
-  static final double[][] doubles = {
+  // double lookup table, used for optimizations.
+  private static final double[][] doubles = {
     { 0d,0d,0d,0d,0d,0d,0d,0d,0d,0d,0d,0d,0d,0d,0d},
     { 0.1d,0.01d,0.001d,0.0001d,0.00001d,0.000001d,0.0000001d,0.00000001d,0.000000001d,0.0000000001d,0.00000000001d,0.000000000001d,0.0000000000001d,0.00000000000001d,0.000000000000001d},        
     { 0.2d,0.02d,0.002d,0.0002d,0.00002d,0.000002d,0.0000002d,0.00000002d,0.000000002d,0.0000000002d,0.00000000002d,0.000000000002d,0.0000000000002d,0.00000000000002d,0.000000000000002d},        
@@ -32,64 +39,127 @@ public class InputReader {
   public InputReader (InputStream stream, int buffer_sz) {
     if (stream == null || buffer_sz <= 0) throw new IllegalArgumentException();
     buf = new byte[buffer_sz];
+    this.buffer_sz = buffer_sz;
     this.stream = stream;
   }
 
-  // Reads a single character from input and returns -1 if there is no more data to read
-  public int read() {
-    if (numChars == -1) throw new InputMismatchException();
-    if (charIndex >= numChars) {
-      charIndex = 0;
-      try { numChars = stream.read(buf); } 
-      catch (IOException e) { throw new InputMismatchException(); }
-      if (numChars <= 0) return -1;
+  // Reads a single character from input
+  // returns the byte value of the next character in the buffer.
+  // Also returns -1 if there is no more data to read
+  public int read() throws IOException {
+
+    if (num_bytes_read == EOF) throw new InputMismatchException();
+
+    if (buf_index >= num_bytes_read) {
+      buf_index = 0;
+      num_bytes_read = stream.read(buf);
+      if (num_bytes_read == EOF)
+        return EOF;
     }
-    return buf[charIndex++];
+    return buf[buf_index++];
+
   }
 
   // Reads a 32bit signed integer from input stream
   public int readInt() throws IOException {
     int c = read(), sgn = 1, res = 0;
-    while (c <= 32) c = read(); // while c is either: ' ', '\n', -1
+    while (c <= SP) c = read(); // while c is either: ' ', '\n', EOF
     if (c == '-') { sgn = -1; c = read(); }
     do { res = (res<<3)+(res<<1); res += c - '0'; c = read(); }
-    while (c > 32); // Still has digits
+    while (c > SP); // Still has digits
     return res * sgn;
   }
 
   // Reads a 64bit signed integer from input stream
   public long readLong() throws IOException {
     int c = read();
-    while (c <= 32) c = read(); // while c is either: ' ', '\n', -1
+    while (c <= SP) c = read(); // while c is either: ' ', '\n', EOF
     int sgn = 1;
     if (c == '-') { sgn = -1; c = read(); }
     long res = 0;
     do { res = (res<<3)+(res<<1); res += c - '0'; c = read(); }
-    while (c > 32); // Still has digits
+    while (c > SP); // Still has digits
     return res * sgn; 
+  }
+
+  // Reads everything in the input stream into a string
+  public String readAll() throws IOException {
+
+    ByteArrayOutputStream result = new ByteArrayOutputStream(DEFAULT_BUFFER_SZ);
+
+    // Finish writing data currently in the buffer
+    result.write(buf, buf_index, buffer_sz - buf_index);
+
+    // Write data until into the result output stream until there is no more
+    while ( (num_bytes_read = stream.read(buf)) != EOF)
+      result.write(buf, 0, num_bytes_read);
+      
+    return result.toString("UTF-8");
+
+  }
+
+  public String readLine() throws IOException {
+    
+    if (num_bytes_read == -1) return null;
+
+    int start = buf_index;
+    ByteArrayOutputStream result = new ByteArrayOutputStream();
+
+    // while (true) {
+
+    //   while( buf_index < num_bytes_read && buf[buf_index] != 10 ) buf_index++;
+    //   if (buf_index == 10) return result.toString();
+
+    //   result.write(buf, start, buf_index - start );      
+
+    // }
+
+    // Finish writing data currently in the buffer
+    // while( buf_index < num_bytes_read && buf[buf_index] != 10 ) buf_index++;
+    // result.write(buf, start, buf_index - start );
+    
+    // // Keep reading we have no found the end of the string yet
+    // if (buf_index == buffer_sz) {
+    //   buf_index = 0;
+
+    // }
+
+
+    // // While we have not reached the end
+    // while ((num_bytes_read = stream.read(buf)) != -1) {
+    //   int i = 0;
+    //   while( i < num_bytes_read && buf[i] != 10 ) i++;
+    //   result.write(b, 0, i);
+    //   if (i < num_bytes_read) break; // Found a '\n' character
+    //   // System.out.println(java.util.Arrays.toString(b));
+    //   // System.out.println(result.toString("UTF-8"));
+    // }
+
+    return result.toString();
+
   }
 
   // Reads a line from input stream.
   // Returns null if there are no more lines
-  public String readLine() throws IOException {
-    int c = read();
-    if (c == '\n') return ""; // Empty line
-    if (c == -1) return null; // EOF
-    StringBuilder res = new StringBuilder();
-    do { res.appendCodePoint(c); c = read(); } 
-    while (c != '\n' && c != -1); // Spaces & tabs are ok but not newlines or EOF characters
-    return res.toString();    
-  }
+  // public String readLine() throws IOException {
+  //   int c = read();
+  //   if (c == '\n') return ""; // Empty line
+  //   if (c == -1) return null; // EOF
+  //   StringBuilder res = new StringBuilder();
+  //   do { res.appendCodePoint(c); c = read(); } 
+  //   while (c != '\n' && c != -1); // Spaces & tabs are ok, but not newlines or EOF characters
+  //   return res.toString();    
+  // }
 
   // Reads a string of characters from the input stream. 
   // The delimiter separating a string of characters is set to be:
   // any ASCII value <= 32 meaning any spaces, new lines, EOF, tabs ...
   public String readStr() throws IOException {
     int c = read();
-    while (c <= 32) c = read(); // while c is either: ' ', '\n', -1
+    while (c <= SP) c = read(); // while c is either: ' ', '\n', -1
     StringBuilder res = new StringBuilder();
     do { res.appendCodePoint(c); c = read(); } 
-    while (c > 32); // Still non-space characters
+    while (c > SP); // Still non-space characters
     return res.toString();
   }
 
@@ -98,7 +168,7 @@ public class InputReader {
   // exact because we're doing arithmetic (adding, multiplication) on finite floating point numbers.
   @Deprecated public double readDoubleFast() throws IOException {
     int c = read(), sgn = 1;
-    while (c <= 32) c = read(); // while c is either: ' ', '\n', -1
+    while (c <= SP) c = read(); // while c is either: ' ', '\n', -1
     if (c == '-') { sgn = -1; c = read(); }
     double res = 0.0;
     // while c is not: ' ', '\n', '.' or -1
@@ -106,7 +176,7 @@ public class InputReader {
     if (c == '.') {
       int i = 0; c = read();
       // while c is digit and there are < 15 digits after dot
-      while (c > 32 && i < 15)
+      while (c > SP && i < 15)
       { res += doubles[(c - '0')][i++]; c = read(); }
     }
     return res * sgn;
@@ -116,6 +186,14 @@ public class InputReader {
   // It is recommended that you use this method instead of readDouble
   public double readDouble() throws IOException {
     return Double.valueOf(readStr());
+  }
+
+  public static void main(String[] args) throws IOException {
+    InputReader in = new InputReader();
+    System.out.println(in.readLine());
+    System.out.println(in.readLine());
+    System.out.println(in.readLine());
+    System.out.println(in.readLine());
   }
 
 }
