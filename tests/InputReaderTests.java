@@ -93,5 +93,55 @@ public class InputReaderTests {
 
   }
 
+  @Test
+  public void testReadLong() throws IOException {
+
+    // Test non negative values
+    String str = "  0 1  2    3  \n 55 345 888234 1111111111111  839475594569048  \n";
+    InputReader in = getReader(str);
+
+    assertEquals( 0, in.readLong() );
+    assertEquals( 1, in.readLong() );
+    assertEquals( 2, in.readLong() );
+    assertEquals( 3, in.readLong() );
+    assertEquals( 55, in.readLong() );
+    assertEquals( 345, in.readLong() );
+    assertEquals( 888234, in.readLong() );
+
+    // Test negative values
+    str = "  -0 -1  -2    -3  \n -55 -345 -888234 -1111111111111  -839475594569048  \n";
+    in = getReader(str);
+
+    assertEquals(  0L, in.readLong() );
+    assertEquals( -1L, in.readLong() );
+    assertEquals( -2L, in.readLong() );
+    assertEquals( -3L, in.readLong() );
+    assertEquals( -55L, in.readLong() );
+    assertEquals( -345L, in.readLong() );
+    assertEquals( -888234L, in.readLong() );
+    assertEquals( -1111111111111L, in.readLong() );
+    assertEquals( -839475594569048L, in.readLong() );
+
+  }
+
+  @Test
+  public void testReadLongExtremes() throws IOException {
+
+    // Test integer maximum and minimum values
+    String str = Long.MAX_VALUE + " " + Long.MIN_VALUE;
+    InputReader in = getReader(str);
+
+    assertEquals( Long.MAX_VALUE, in.readLong() );
+    assertEquals( Long.MIN_VALUE, in.readLong() );
+
+    str = (Long.MAX_VALUE-1) + " " + (Long.MIN_VALUE+1);
+    in = getReader(str);
+    
+    // Test Long maximum and minimum values +- 1
+    assertEquals( Long.MAX_VALUE-1, in.readLong() );
+    assertEquals( Long.MIN_VALUE+1, in.readLong() );
+
+  }  
+
 }
 
