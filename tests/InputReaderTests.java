@@ -23,6 +23,29 @@ public class InputReaderTests {
   }
 
   @Test
+  public void testInputReaderExtremeBufferSizeValues() throws IOException {
+
+    String s = " abcde \n\n\n 77\n     -34\n 575678 AAAA %%%%^^^^^\n -78787";
+
+    // Try all buffer sizes from [1, 128]
+    for (int buffer_size = 1; buffer_size <= 128; buffer_size++ ) {
+      
+      InputStream is = new ByteArrayInputStream(s.getBytes());
+      InputReader in = new InputReader(is, buffer_size);
+
+      assertEquals( "abcde", in.readStr() );
+      assertEquals( 77, in.readInt() );
+      assertEquals( -34, in.readInt() );
+      assertEquals( 575678, in.readInt() );
+      assertEquals( "AAAA", in.readStr() );
+      assertEquals( "%%%%^^^^^", in.readStr() );
+      assertEquals( -78787, in.readInt() );
+
+    }
+
+  }
+
+  @Test
   public void testReadInt() throws IOException {
 
     // Test non negative values
