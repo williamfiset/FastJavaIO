@@ -12,6 +12,16 @@ public class InputReaderTests {
     return new InputReader(is);
   }
 
+  @Test(expected=IllegalArgumentException.class)
+  public void testIllegalBufferSz1() {
+    new InputReader( 0 );
+  }
+
+  @Test(expected=IllegalArgumentException.class)
+  public void testIllegalBufferSz2() {
+    new InputReader( -1 );
+  }
+
   @Test
   public void testReadInt() throws IOException {
 
@@ -44,7 +54,7 @@ public class InputReaderTests {
   @Test
   public void testReadIntExtremes() throws IOException {
 
-    // Test non negative values
+    // Test integer maximum and minimum values
     String str = Integer.MAX_VALUE + " " + Integer.MIN_VALUE;
     InputReader in = getReader(str);
 
@@ -54,6 +64,7 @@ public class InputReaderTests {
     str = (Integer.MAX_VALUE-1) + " " + (Integer.MIN_VALUE+1);
     in = getReader(str);
     
+    // Test integer maximum and minimum values +- 1
     assertEquals( Integer.MAX_VALUE-1, in.readInt() );
     assertEquals( Integer.MIN_VALUE+1, in.readInt() );
 

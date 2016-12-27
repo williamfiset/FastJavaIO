@@ -4,11 +4,14 @@ import java.io.IOException;
 
 public class InputReader {
   
-  InputStream stream;
-  byte[] buf = new byte[65536]; // 2^16
+  final byte[] buf; 
+  final InputStream stream;
+  static final int DEFAULT_BUFFER_SZ = 65536; // 2^16
+  static final InputStream DEFAULT_STREAM = System.in;
+
   int charIndex, numChars;
   
-  double[][] doubles = {
+  static final double[][] doubles = {
     { 0d,0d,0d,0d,0d,0d,0d,0d,0d,0d,0d,0d,0d,0d,0d},
     { 0.1d,0.01d,0.001d,0.0001d,0.00001d,0.000001d,0.0000001d,0.00000001d,0.000000001d,0.0000000001d,0.00000000001d,0.000000000001d,0.0000000000001d,0.00000000000001d,0.000000000000001d},        
     { 0.2d,0.02d,0.002d,0.0002d,0.00002d,0.000002d,0.0000002d,0.00000002d,0.000000002d,0.0000000002d,0.00000000002d,0.000000000002d,0.0000000000002d,0.00000000000002d,0.000000000000002d},        
@@ -21,8 +24,16 @@ public class InputReader {
     { 0.9d,0.09d,0.009d,0.0009d,0.00009d,0.000009d,0.0000009d,0.00000009d,0.000000009d,0.0000000009d,0.00000000009d,0.000000000009d,0.0000000000009d,0.00000000000009d,0.000000000000009d}
   };
 
-  public InputReader () { stream = System.in; }
-  public InputReader (InputStream stream) { this.stream = stream; }
+  public InputReader () { this(DEFAULT_STREAM, DEFAULT_BUFFER_SZ); }
+  public InputReader (InputStream stream) { this(stream, DEFAULT_BUFFER_SZ); }
+  public InputReader (int buffer_sz) { this(DEFAULT_STREAM, buffer_sz); }
+
+  // Designated constructor
+  public InputReader (InputStream stream, int buffer_sz) {
+    if (stream == null || buffer_sz <= 0) throw new IllegalArgumentException();
+    buf = new byte[buffer_sz];
+    this.stream = stream;
+  }
 
   // Reads a single character from input and returns -1 if there is no more data to read
   public int read() {
