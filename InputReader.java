@@ -70,7 +70,7 @@ public class InputReader {
     return res.toString();    
   }
 
-  // Reads a string if characters from the input stream. 
+  // Reads a string of characters from the input stream. 
   // The delimiter separating a string of characters is set to be:
   // any ASCII value <= 32 meaning any spaces, new lines, EOF, tabs ...
   public String readStr() throws IOException {
@@ -82,7 +82,7 @@ public class InputReader {
     return res.toString();
   }
 
-  // Very quickly reads a double value from standard input. However this method only 
+  // Very quickly reads a double value from standard input. However, this method only 
   // returns an approximate double value from input stream. The value is not
   // exact because we're doing arithmetic (adding, multiplication) on finite floating point numbers.
   @Deprecated public double readDoubleFast() throws IOException {
@@ -102,13 +102,9 @@ public class InputReader {
   }
 
   // About 2.5x slower than readDouble, but returns an exact value a double
-  // It recommended that you use this method instead of readDouble
+  // It is recommended that you use this method instead of readDouble
   public double readDouble() throws IOException {
     return Double.valueOf(readStr());
   }
 
 }
-
-
-
-
