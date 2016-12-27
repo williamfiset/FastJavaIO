@@ -221,7 +221,7 @@ public class InputReaderTests {
   }
 
   @Test
-  public void testReadStringExtremes()  throws IOException {
+  public void testReadString2()  throws IOException {
 
     String str = "\n\n\nabcdef\n\n\n";
     InputReader in = getReader(str);
@@ -236,14 +236,55 @@ public class InputReaderTests {
   @Test
   public void testReadLine() throws IOException {
 
+    String s = "hello\nworld\n";
+    InputReader in = getReader(s);
+    assertEquals("hello", in.readLine());
+    assertEquals("world", in.readLine());
+    assertEquals(null, in.readLine());
 
+    s = "a\nb\nc\n";
+    in = getReader(s);
+    assertEquals("a", in.readLine());
+    assertEquals("b", in.readLine());
+    assertEquals("c", in.readLine());
+    assertEquals(null, in.readLine());
+
+    s = "aaaa\nbbbb\ncccc\n";
+    in = getReader(s);
+    assertEquals("aaaa", in.readLine());
+    assertEquals("bbbb", in.readLine());
+    assertEquals("cccc", in.readLine());
+    assertEquals(null, in.readLine());
 
   }
 
   @Test
   public void testReadLineExtremes() throws IOException {
 
+    String s = "";
+    InputReader in = getReader(s);
+    assertEquals(null, in.readLine());
+
+    s = " ";
+    in = getReader(s);
+    assertEquals(" ", in.readLine());
+    // assertEquals(null, in.readLine());    
     
+    s = "\n";
+    in = getReader(s);
+    assertEquals("", in.readLine());  
+    // assertEquals(null, in.readLine());
+
+    s = "\n\n\nA\n\nB\n\n";
+    in = getReader(s);
+    assertEquals("", in.readLine());  
+    assertEquals("", in.readLine());  
+    assertEquals("", in.readLine());  
+    assertEquals("A", in.readLine());  
+    assertEquals("", in.readLine());  
+    assertEquals("B", in.readLine());  
+    assertEquals("", in.readLine());  
+    // assertEquals(null, in.readLine());
 
   }
 
@@ -269,7 +310,7 @@ public class InputReaderTests {
     in = getReader(s);
     assertEquals(s, in.readAll());
 
-    s = "!@#$%^&*( sfsdjkfhbsfpqpwouwijt59yrh54jge4t439f     \n ruiwghfisbfsfmvdkjf dfgu545$%^$% <>,./ ERwerWERwrwEhGHGsew \n \n    rkeferWRWERWE ";
+    s = "  !@\n #$%^ \n &*( sfsdjk0fhbsfp\n\n\n\n  \n\n qpwouwijt59yrh54jge4t439f     \n ruiwghfisbfsfmvdkjf dfgu545$%^$% <>,./ ERwerWERwrwEhGHGsew \n \n    rkeferWRWERWE ";
     in = getReader(s);
     assertEquals(s, in.readAll());
 
@@ -295,7 +336,15 @@ public class InputReaderTests {
   @Test
   public void testReadAllDifferentBufferSizes() throws IOException {
 
-    
+    // Try all buffer sizes from [1, 128]
+    for (int buffer_size = 1; buffer_size <= 128; buffer_size++ ) {
+      
+      String s = "  !@\n #$%^ \n &*( s^fsdjkfhbsfp\n\n\n\n  \n\n qpwouwijt59yrh54jge4t439f     \n ruiwghfisbfsfmvdkjf dfgu545$%^$% <>,./ ERwerWERwrwEhGHGsew \n \n    rkeferWRWERWE ";
+      InputStream is = new ByteArrayInputStream(s.getBytes());
+      InputReader in = new InputReader(is, buffer_size);
+      assertEquals(s, in.readAll());
+
+    }
     
   }
 

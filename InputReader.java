@@ -151,7 +151,7 @@ public class InputReader {
     if (c == NL) return ""; // Empty line
     if (c == EOF) return null; // EOF
     StringBuilder res = new StringBuilder();
-    do { res.appendCodePoint(c); c = read(); } 
+    do { res.appendCodePoint(c); c = read(); }
     while (c != NL && c != EOF); // Spaces & tabs are ok, but not newlines or EOF characters
     return res.toString();    
   }
@@ -161,19 +161,25 @@ public class InputReader {
   // any ASCII value <= 32 meaning any spaces, new lines, EOF, tabs ...
   public String readStr() throws IOException {
     int c = read();
-    while (c <= SP) c = read(); // while c is either: ' ', '\n', -1
+    while (c <= SP) c = read(); // while c is either: ' ', '\n', EOF
     StringBuilder res = new StringBuilder();
-    do { res.appendCodePoint(c); c = read(); } 
+    do { res.appendCodePoint(c); c = read(); }
     while (c > SP); // Still non-space characters
     return res.toString();
   }
 
-  // Very quickly reads a double value from standard input. However, this method only 
+  // Returns an exact value a double value from the input stream.
+  // This method is ~2.5x slower than readDoubleFast.
+  public double readDouble() throws IOException {
+    return Double.valueOf(readStr());
+  }
+
+  // Very quickly reads a double value from the input stream. However, this method only 
   // returns an approximate double value from input stream. The value is not
   // exact because we're doing arithmetic (adding, multiplication) on finite floating point numbers.
   @Deprecated public double readDoubleFast() throws IOException {
     int c = read(), sgn = 1;
-    while (c <= SP) c = read(); // while c is either: ' ', '\n', -1
+    while (c <= SP) c = read(); // while c is either: ' ', '\n', EOF
     if (c == DASH) { sgn = -1; c = read(); }
     double res = 0.0;
     // while c is not: ' ', '\n', '.' or -1
@@ -185,12 +191,6 @@ public class InputReader {
       { res += doubles[(c - '0')][i++]; c = read(); }
     }
     return res * sgn;
-  }
-
-  // About 2.5x slower than readDouble, but returns an exact value a double
-  // It is recommended that you use this method instead of readDouble
-  public double readDouble() throws IOException {
-    return Double.valueOf(readStr());
   }
 
   public static void main(String[] args) throws IOException {
