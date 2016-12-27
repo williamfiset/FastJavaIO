@@ -6,7 +6,7 @@ import java.util.InputMismatchException;
 
 public class InputReader {
   
-  private int buffer_sz, buf_index, num_bytes_read;
+  private int buffer_sz, buf_index, num_bytes_read, c;
   
   private final byte[] buf; 
   private final InputStream stream;
@@ -65,7 +65,7 @@ public class InputReader {
 
   // Reads a 32bit signed integer from input stream
   public int readInt() throws IOException {
-    int c = read(), sgn = 1, res = 0;
+    c = read(); int sgn = 1, res = 0;
     while (c <= SP) c = read(); // while c is either: ' ', '\n', EOF
     if (c == DASH) { sgn = -1; c = read(); }
     do { res = (res<<3)+(res<<1); res += c - '0'; c = read(); }
@@ -75,8 +75,8 @@ public class InputReader {
 
   // Reads a 64bit signed integer from input stream
   public long readLong() throws IOException {
-    int c = read();
-    while (c <= SP) c = read(); // while c is either: ' ', '\n', EOF
+    c = read();
+    while (c <= SP) c = read(); // while c is either: ' ' or '\n'
     int sgn = 1;
     if (c == DASH) { sgn = -1; c = read(); }
     long res = 0;
@@ -147,7 +147,7 @@ public class InputReader {
   // Reads a line from input stream.
   // Returns null if there are no more lines
   public String readLine() throws IOException {
-    int c = read();
+    try { c=read(); } catch (InputMismatchException e) {return null; }
     if (c == NL) return ""; // Empty line
     if (c == EOF) return null; // EOF
     StringBuilder res = new StringBuilder();
@@ -160,8 +160,15 @@ public class InputReader {
   // The delimiter separating a string of characters is set to be:
   // any ASCII value <= 32 meaning any spaces, new lines, EOF, tabs ...
   public String readStr() throws IOException {
-    int c = read();
-    while (c <= SP) c = read(); // while c is either: ' ', '\n', EOF
+    
+    c = 0;
+
+    // while c is either: ' ' or '\n'
+    try { while (c <= SP) c = read();
+
+    // EOF throws exception
+    } catch (InputMismatchException e) { return null; }
+    
     StringBuilder res = new StringBuilder();
     do { res.appendCodePoint(c); c = read(); }
     while (c > SP); // Still non-space characters
@@ -178,7 +185,7 @@ public class InputReader {
   // returns an approximate double value from input stream. The value is not
   // exact because we're doing arithmetic (adding, multiplication) on finite floating point numbers.
   @Deprecated public double readDoubleFast() throws IOException {
-    int c = read(), sgn = 1;
+    c = read(); int sgn = 1;
     while (c <= SP) c = read(); // while c is either: ' ', '\n', EOF
     if (c == DASH) { sgn = -1; c = read(); }
     double res = 0.0;

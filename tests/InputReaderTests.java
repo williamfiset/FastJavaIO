@@ -192,39 +192,27 @@ public class InputReaderTests {
 
   }
 
-  @Test(expected=java.util.InputMismatchException.class)
-  public void testReadStringExtremes1() throws IOException {
+  @Test
+  public void testReadStringExtremes()  throws IOException {
+
     String str = "";
     InputReader in = getReader(str);
-    assertEquals("", in.readStr());
-  }
+    assertNull(in.readStr());
 
-  @Test(expected=java.util.InputMismatchException.class)
-  public void testReadStringExtremes2() throws IOException {
-    String str = "\n";
-    InputReader in = getReader(str);
-    in.readStr();
-  }
+    str = "\n";
+    in = getReader(str);
+    assertEquals(null, in.readStr());
 
-  @Test(expected=java.util.InputMismatchException.class)
-  public void testReadStringExtremes3() throws IOException {
-    String str = " ";
-    InputReader in = getReader(str);
-    in.readStr();
-  }
+    str = "   ";
+    in = getReader(str);
+    assertNull(null, in.readStr());
 
-  @Test(expected=java.util.InputMismatchException.class)
-  public void testReadStringExtremes4() throws IOException {
-    String str = "\n\n\n\n\n";
-    InputReader in = getReader(str);
-    in.readStr();
-  }
+    str = "\n\n\n\n\n";
+    in = getReader(str);
+    assertNull(in.readStr());
 
-  @Test
-  public void testReadString2()  throws IOException {
-
-    String str = "\n\n\nabcdef\n\n\n";
-    InputReader in = getReader(str);
+    str = "\n\n\nabcdef\n\n\n";
+    in = getReader(str);
     assertEquals("abcdef", in.readStr());
 
     str = "\n\n\n    abcdef    \n\n\n";
@@ -264,16 +252,19 @@ public class InputReaderTests {
     String s = "";
     InputReader in = getReader(s);
     assertEquals(null, in.readLine());
+    assertEquals(null, in.readLine());
 
     s = " ";
     in = getReader(s);
     assertEquals(" ", in.readLine());
-    // assertEquals(null, in.readLine());    
+    assertEquals(null, in.readLine());    
+    assertEquals(null, in.readLine());    
     
     s = "\n";
     in = getReader(s);
     assertEquals("", in.readLine());  
-    // assertEquals(null, in.readLine());
+    assertEquals(null, in.readLine());
+    assertEquals(null, in.readLine());
 
     s = "\n\n\nA\n\nB\n\n";
     in = getReader(s);
@@ -284,7 +275,9 @@ public class InputReaderTests {
     assertEquals("", in.readLine());  
     assertEquals("B", in.readLine());  
     assertEquals("", in.readLine());  
-    // assertEquals(null, in.readLine());
+    assertEquals(null, in.readLine());
+    assertEquals(null, in.readLine());
+    assertEquals(null, in.readLine());
 
   }
 
