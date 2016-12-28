@@ -205,6 +205,17 @@ public class InputReaderTests {
     assertEquals("bb", in.readStr());
     assertEquals("ccc", in.readStr());
 
+    str = "Apple banana orange\n\n KiWi dragonFRuIt \n   \n  WatERmeOn  \n\n\nPEARS\n\n   ";
+    in  = getReader(str);
+    assertEquals( in.readStr(), "Apple" );
+    assertEquals( in.readStr(), "banana" );
+    assertEquals( in.readStr(), "orange" );
+    assertEquals( in.readStr(), "KiWi" );
+    assertEquals( in.readStr(), "dragonFRuIt" );
+    assertEquals( in.readStr(), "WatERmeOn" );
+    assertEquals( in.readStr(), "PEARS" );
+    assertNull( in.readStr() );
+
   }
 
   @Test
@@ -258,6 +269,21 @@ public class InputReaderTests {
     assertEquals("bbbb", in.readLine());
     assertEquals("cccc", in.readLine());
     assertEquals(null, in.readLine());
+
+    s = "Apple banana orange\n\n KiWi dragonFRuIt \n   \n  WatERmeOn  \n\n\nPEARS\n\n   ";
+    in = getReader(s);
+    
+    assertEquals(in.readLine(), "Apple banana orange");
+    assertEquals(in.readLine(), "");
+    assertEquals(in.readLine(), " KiWi dragonFRuIt ");
+    assertEquals(in.readLine(), "   ");
+    assertEquals(in.readLine(), "  WatERmeOn  ");
+    assertEquals(in.readLine(), "");
+    assertEquals(in.readLine(), "");
+    assertEquals(in.readLine(), "PEARS");
+    assertEquals(in.readLine(), "");
+    assertEquals(in.readLine(), "   ");
+    assertNull(in.readLine());
 
   }
 
