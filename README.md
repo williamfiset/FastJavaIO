@@ -66,12 +66,11 @@ String str = in.readStr();
 ```
 
 ### .readLine()
-Reads a line of characters from the input stream until a new line character is reached. If the input stream is empty a null value is returned to indicate so.
+Reads a line of characters from the input stream until a new line character is reached. The .readLine() method includes spaces found in the input stream. If the input stream is empty a null value is returned to indicate so.
 ``` java
 InputReader in = new InputReader();
 String line = in.readLine();
 ```
-
 
 ### .readAll()
 Reads all remeaning characters found in the input stream and returns it as a String. 
@@ -80,10 +79,16 @@ InputReader in = new InputReader();
 String everything = in.readAll();
 ```
 
+## Examples
 
+``` java
+// Suppose standard input stream contains "  123     abcdef   3.141592   the quick brown fox\n jumps \nover\n\n the lazy dog"
 
-## Example usage
-
-
-
-
+InputReader in = new InputReader();
+int intvalue = in.readInt(); // '123'
+String str = in.readStr();   // 'abcdef'
+double dblvalue = in.readDouble(); // '3.141592'
+String str2 = in.readStr();   // 'the'
+String line = in.readLine(); // 'quick brown fox'
+String rest = in.readAll(); // ' jumps \nover\n\n the lazy dog'
+```
