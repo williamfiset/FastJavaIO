@@ -52,14 +52,14 @@ double doublevalue = in.readDouble();
 ```
 
 ### .readFastDouble()
-Reads a double value faster (~2.5x) from the input stream than .readDouble() but at the cost of accuracy. The value returned may not be exact because finite floating point number arithmetic (adding, multiplication) being used to quickly compute the next double's value.
+Reads a double value ~2.5x times faster from the input stream than .readDouble() but at the cost of accuracy. The value returned may not be exact due to finite floating point number arithmetic (adding, multiplication) used to quickly compute the next double's value.
 ``` java
 InputReader in = new InputReader();
 double doublevalue = in.readDoubleFast();
 ```
 ### .readStr()
 Reads a string of characters from the input stream. The delimiter separating a string of characters is set to be
-any ASCII value <= 32 meaning any spaces, new lines, EOF characters, tabs... If the input stream is empty null is returned.
+any ASCII value <= 32 meaning any spaces, new lines, EOF characters, tabs... do not count as being part of the string. If the input stream is empty null is returned.
 ``` java
 InputReader in = new InputReader();
 String str = in.readStr();
@@ -81,6 +81,8 @@ String everything = in.readAll();
 
 ## Examples
 
+#### General case
+
 ``` java
 // Suppose standard input stream contains the following string we want to read:
 "  123 3.141592    abcdef    the quick brown fox\n jumps \nover\n\n the lazy dog"
@@ -93,3 +95,25 @@ String str2 = in.readStr();        // 'the'
 String line = in.readLine();       // 'quick brown fox'
 String rest = in.readAll();        // ' jumps \nover\n\n the lazy dog'
 ```
+
+#### .readByte() examples
+``` java
+// Suppose standard input stream contains the following byte values we want to read:
+"-128 127 -1 -0 0 1 3454"
+                     ^ Note this does NOT fit in a signed byte!
+
+InputReader in = new InputReader();
+byte b1 = in.readByte(); // -128
+byte b2 = in.readByte(); // 127
+byte b3 = in.readByte(); // -1
+byte b4 = in.readByte(); // 0
+byte b5 = in.readByte(); // 0
+byte b6 = in.readByte(); // 1
+byte b7 = in.readByte(); //  This byte value overflowed! No safety check gets done for this it is assumed the user knows the range of the value they're reading from the stream                          
+                          ```
+
+#### .readStr() example
+
+
+
+
