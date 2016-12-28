@@ -74,7 +74,7 @@ public class InputReader {
 
   // Reads a single byte from the input stream
   public byte readByte() throws java.io.IOException {
-    return (byte) read();
+    return (byte) readInt();
   }
 
   // Reads a 32bit signed integer from input stream

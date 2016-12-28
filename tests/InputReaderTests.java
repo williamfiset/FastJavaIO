@@ -46,6 +46,21 @@ public class InputReaderTests {
   }
 
   @Test
+  public void testReadByte() throws IOException {
+
+    String str = "-128 127 -1 -0 0 1";
+    InputReader in = getReader(str);
+
+    assertEquals( -128, in.readByte());
+    assertEquals(  127, in.readByte());
+    assertEquals(   -1, in.readByte());
+    assertEquals(    0, in.readByte());
+    assertEquals(    0, in.readByte());
+    assertEquals(    1, in.readByte());
+
+  }
+
+  @Test
   public void testReadInt() throws IOException {
 
     // Test non negative values
@@ -201,11 +216,11 @@ public class InputReaderTests {
 
     str = "\n";
     in = getReader(str);
-    assertEquals(null, in.readStr());
+    assertNull(in.readStr());
 
     str = "   ";
     in = getReader(str);
-    assertNull(null, in.readStr());
+    assertNull(in.readStr());
 
     str = "\n\n\n\n\n";
     in = getReader(str);
