@@ -11,7 +11,7 @@ public class InputReader {
   private final byte[] buf; 
   private final InputStream stream;
   
-  private static final int DEFAULT_BUFFER_SZ = 5; // 65536; // 2^16
+  private static final int DEFAULT_BUFFER_SZ = 65536; // 2^16
   private static final InputStream DEFAULT_STREAM = System.in;
 
   private static final int EOF   = -1; // End Of File character
@@ -20,6 +20,14 @@ public class InputReader {
   private static final int DASH  = 45; // '-'  - Dash character (DOT)
   private static final int DOT   = 46; // '.'  - Dot character (DOT)
   
+  // int lookup table, used for optimizations 
+  private static int[] ints = new int[128];
+  
+  static {
+    for (int i = 48, value = 0; i < 58; i++, value++ )
+      ints[i] = value;
+  }
+
   // double lookup table, used for optimizations.
   private static final double[][] doubles = {
     { 0.0d,0.00d,0.000d,0.0000d,0.00000d,0.000000d,0.0000000d,0.00000000d,0.000000000d,0.0000000000d,0.00000000000d,0.000000000000d,0.0000000000000d,0.00000000000000d,0.000000000000000d},
@@ -68,7 +76,7 @@ public class InputReader {
     c = read(); int sgn = 1, res = 0;
     while (c <= SP) c = read(); // while c is either: ' ', '\n', EOF
     if (c == DASH) { sgn = -1; c = read(); }
-    do { res = (res<<3)+(res<<1); res += c - '0'; c = read(); }
+    do { res = (res<<3)+(res<<1); res += ints[c]; c = read(); }
     while (c > SP); // Still has digits
     return res * sgn;
   }
@@ -80,7 +88,7 @@ public class InputReader {
     int sgn = 1;
     if (c == DASH) { sgn = -1; c = read(); }
     long res = 0;
-    do { res = (res<<3)+(res<<1); res += c - '0'; c = read(); }
+    do { res = (res<<3)+(res<<1); res += ints[c]; c = read(); }
     while (c > SP); // Still has digits
     return res * sgn; 
   }
@@ -190,12 +198,12 @@ public class InputReader {
     if (c == DASH) { sgn = -1; c = read(); }
     double res = 0.0;
     // while c is not: ' ', '\n', '.' or -1
-    while (c > 46) {res *= 10.0; res += c - '0'; c = read(); }
+    while (c > 46) {res *= 10.0; res += ints[c]; c = read(); }
     if (c == DOT) {
       int i = 0; c = read();
       // while c is digit and there are < 15 digits after dot
       while (c > SP && i < 15)
-      { res += doubles[(c - '0')][i++]; c = read(); }
+      { res += doubles[ints[c]][i++]; c = read(); }
     }
     return res * sgn;
   }

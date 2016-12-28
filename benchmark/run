@@ -1,0 +1,5 @@
+
+javac ../*.java -d .
+javac *.java
+java BenchMark
+

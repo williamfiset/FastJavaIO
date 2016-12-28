@@ -75,7 +75,6 @@ public class BenchMark {
     try {
       while(true) {
         int integer = in.readInt();
-        System.out.println(integer);
         sum += integer;
       }
     } catch (java.util.InputMismatchException e) { }
@@ -88,11 +87,11 @@ public class BenchMark {
 
   public static void main(String[] args) throws IOException {
 
-    readFileBufferedReader();
-    readFileInputReader();
+    // readFileBufferedReader();
+    // readFileInputReader();
 
-    // readFileInputReaderIntegers();
-    // readFileBufferedReaderIntegers();
+    readFileInputReaderIntegers();
+    readFileBufferedReaderIntegers();
 
   }
 
