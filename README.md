@@ -131,9 +131,39 @@ int integer7 = in.readInt(); // 1
 int integer8 = in.readInt(); // -727379969, this int value overflowed! No safety check gets done for this it  
                              // is assumed the user knows the range of the values they're reading from the stream
 int integer9 = in.readInt(); // Nothing left in stream so an error is thrown
+```
 
 #### .readStr() example
 
+``` java
+// Suppose standard input stream contains the following string and we want
+// to read only individual fruits contained inside this sentence with .readStr()
+"Apple banana orange\n\n KiWi dragonFRuIt \n   \n  WatERmeOn  \n\n\nPEARS\n\n   "
 
+static InputReader in = new InputReader();
+public static void main(String[] args) throws IOException {
+  String s1 = in.readStr(); // "Apple"
+  String s2 = in.readStr(); // "banana"
+  String s3 = in.readStr(); // "orange"
+  String s4 = in.readStr(); // "KiWi"
+  String s5 = in.readStr(); // "dragonFRuIt"
+  String s6 = in.readStr(); // "WatERmeOn"
+  String s7 = in.readStr(); // "PEARS"
+  String s8 = in.readStr(); // null
+}
+
+```
+
+#### .readLine() example
+
+``` java
+
+```
+
+#### .readAll() example
+
+``` java
+
+```
 
 
