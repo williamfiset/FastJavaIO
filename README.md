@@ -128,8 +128,9 @@ int integer4 = in.readInt(); // -1
 int integer5 = in.readInt(); // 0
 int integer6 = in.readInt(); // 0
 int integer7 = in.readInt(); // 1
-int integer8 = in.readInt(); // -727379969, this int value overflowed! No safety check gets done for this it  
-                             // is assumed the user knows the range of the values they're reading from the stream
+int integer8 = in.readInt(); // -727379969, this int value overflowed! No safety check   
+                             // gets done for this.It is assumed the user knows the 
+                             // range of the values they're reading from the stream
 int integer9 = in.readInt(); // Nothing left in stream so an error is thrown
 ```
 
@@ -166,20 +167,25 @@ String s1  = in.readLine(); // "Apple banana orange"
 String s2  = in.readLine(); // ""
 String s3  = in.readLine(); // " KiWi dragonFRuIt "
 String s4  = in.readLine(); // "   "
-String s5  = in.readLine(); // "dragonFRuIt"
-String s6  = in.readLine(); // "  WatERmeOn  "
+String s5  = in.readLine(); // "  WatERmeOn  "
+String s6  = in.readLine(); // ""
 String s7  = in.readLine(); // ""
-String s8  = in.readLine(); // ""
-String s9  = in.readLine(); // "PEARS"
-String s10 = in.readLine(); // ""
-String s11 = in.readLine(); // "   "
-String s12 = in.readLine(); // null - No more lines left so null is returned
+String s8  = in.readLine(); // "PEARS"
+String s9  = in.readLine(); // ""
+String s10 = in.readLine(); // "   "
+String s11 = in.readLine(); // null - No more lines left so null is returned
 
 ```
 
 #### .readAll() example
 
 ``` java
+// Suppose standard input stream contains the following string and we want
+// to read it all, then we can do this using the .readAll() method
+"Self-education is, I firmly believe, the only kind of education there is. - Isaac Asimov"
+
+InputReader in = new InputReader();
+String quote = in.readAll(); // read the entire input stream
 
 ```
 
