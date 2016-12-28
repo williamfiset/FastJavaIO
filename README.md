@@ -109,8 +109,8 @@ byte b3 = in.readByte(); // -1
 byte b4 = in.readByte(); // 0
 byte b5 = in.readByte(); // 0
 byte b6 = in.readByte(); // 1
-byte b7 = in.readByte(); // 126, this byte value overflowed! No safety check gets done for this it is assumed the user
-                         // knows the range of the values they're reading from the stream                          
+byte b7 = in.readByte(); // 126, this byte value overflowed! No safety check gets done for this it is assumed 
+                         // the user knows the range of the values they're reading from the stream                          
 byte b8 = in.readByte(); // Nothing left in stream so an error is thrown
 ```
 
@@ -118,7 +118,7 @@ byte b8 = in.readByte(); // Nothing left in stream so an error is thrown
 ``` java
 // Suppose standard input stream contains the following byte values we want to read:
 "2147483647 -2147483648 34545 -1 -0 0 1 999999999999"
-//                                 ^ NOTE: This does NOT fit in a signed int!
+//                                          ^ NOTE: This does NOT fit in a signed int!
 
 InputReader in = new InputReader();
 int integer1 = in.readInt(); // 2147483647
@@ -128,8 +128,9 @@ int integer4 = in.readInt(); // -1
 int integer5 = in.readInt(); // 0
 int integer6 = in.readInt(); // 0
 int integer7 = in.readInt(); // 1
-int integer8 = in.readInt(); // -727379969, this int value overflowed! No safety check gets done for this it is assumed 
-                             // the user knows the range of the values they're reading from the stream                          int integer9 = in.readInt(); // Nothing left in stream so an error is thrown
+int integer8 = in.readInt(); // -727379969, this int value overflowed! No safety check gets done for this it  
+                             // is assumed the user knows the range of the values they're reading from the stream
+int integer9 = in.readInt(); // Nothing left in stream so an error is thrown
 
 #### .readStr() example
 
