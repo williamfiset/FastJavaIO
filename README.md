@@ -65,6 +65,14 @@ InputReader in = new InputReader();
 String str = in.readStr();
 ```
 
+### .readLine()
+Reads a line of characters from the input stream until a new line character is reached. If the input stream is empty a null value is returned to indicate so.
+``` java
+InputReader in = new InputReader();
+String line = in.readLine();
+```
+
+
 ### .readAll()
 Reads all remeaning characters found in the input stream and returns it as a String. 
 ``` java
