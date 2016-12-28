@@ -137,26 +137,43 @@ int integer9 = in.readInt(); // Nothing left in stream so an error is thrown
 
 ``` java
 // Suppose standard input stream contains the following string and we want
-// to read only individual fruits contained inside this sentence with .readStr()
+// to read the individual fruits names contained inside this sentence. We
+// Can easily do this by using the .readStr()
 "Apple banana orange\n\n KiWi dragonFRuIt \n   \n  WatERmeOn  \n\n\nPEARS\n\n   "
 
-static InputReader in = new InputReader();
-public static void main(String[] args) throws IOException {
-  String s1 = in.readStr(); // "Apple"
-  String s2 = in.readStr(); // "banana"
-  String s3 = in.readStr(); // "orange"
-  String s4 = in.readStr(); // "KiWi"
-  String s5 = in.readStr(); // "dragonFRuIt"
-  String s6 = in.readStr(); // "WatERmeOn"
-  String s7 = in.readStr(); // "PEARS"
-  String s8 = in.readStr(); // null
-}
+InputReader in = new InputReader();
+String s1 = in.readStr(); // "Apple"
+String s2 = in.readStr(); // "banana"
+String s3 = in.readStr(); // "orange"
+String s4 = in.readStr(); // "KiWi"
+String s5 = in.readStr(); // "dragonFRuIt"
+String s6 = in.readStr(); // "WatERmeOn"
+String s7 = in.readStr(); // "PEARS"
+String s8 = in.readStr(); // null - Returns null when no more strings are found in the input stream
+
 
 ```
 
 #### .readLine() example
 
 ``` java
+// Suppose standard input stream contains the following string and we want
+// to read it line by line. We can do this using the .readLine() method
+"Apple banana orange\n\n KiWi dragonFRuIt \n   \n  WatERmeOn  \n\n\nPEARS\n\n   "
+
+InputReader in = new InputReader();
+String s1  = in.readLine(); // "Apple banana orange"
+String s2  = in.readLine(); // ""
+String s3  = in.readLine(); // " KiWi dragonFRuIt "
+String s4  = in.readLine(); // "   "
+String s5  = in.readLine(); // "dragonFRuIt"
+String s6  = in.readLine(); // "  WatERmeOn  "
+String s7  = in.readLine(); // ""
+String s8  = in.readLine(); // ""
+String s9  = in.readLine(); // "PEARS"
+String s10 = in.readLine(); // ""
+String s11 = in.readLine(); // "   "
+String s12 = in.readLine(); // null - No more lines left so null is returned
 
 ```
 
