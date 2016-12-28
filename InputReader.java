@@ -21,11 +21,17 @@ public class InputReader {
   private static final int DOT   = 46; // '.'  - Dot character (DOT)
   
   // int lookup table, used for optimizations 
-  private static int[] ints = new int[128];
+  private static int[] ints = new int[58];
+
+  // char lookup table, used for optimizations
+  private static char[] chars = new char[128];
   
   static {
-    for (int i = 48, value = 0; i < 58; i++, value++ )
-      ints[i] = value;
+
+    char ch = ' ';
+    for (int i = 48, value = 0; i < 58; i++, value++ ) ints[i] = value;
+    for (int i = 32; i < 128; i++, ch++) chars[i] = ch;
+
   }
 
   // double lookup table, used for optimizations.
@@ -111,47 +117,6 @@ public class InputReader {
 
   }
 
-  // public String readLine() throws IOException {
-    
-  //   if (num_bytes_read == -1) return null;
-
-  //   int start = buf_index;
-  //   ByteArrayOutputStream result = new ByteArrayOutputStream();
-
-    // while (true) {
-
-    //   while( buf_index < num_bytes_read && buf[buf_index] != 10 ) buf_index++;
-    //   if (buf_index == 10) return result.toString();
-
-    //   result.write(buf, start, buf_index - start );      
-
-    // }
-
-    // Finish writing data currently in the buffer
-    // while( buf_index < num_bytes_read && buf[buf_index] != 10 ) buf_index++;
-    // result.write(buf, start, buf_index - start );
-    
-    // // Keep reading we have no found the end of the string yet
-    // if (buf_index == buffer_sz) {
-    //   buf_index = 0;
-
-    // }
-
-
-    // // While we have not reached the end
-    // while ((num_bytes_read = stream.read(buf)) != -1) {
-    //   int i = 0;
-    //   while( i < num_bytes_read && buf[i] != 10 ) i++;
-    //   result.write(b, 0, i);
-    //   if (i < num_bytes_read) break; // Found a '\n' character
-    //   // System.out.println(java.util.Arrays.toString(b));
-    //   // System.out.println(result.toString("UTF-8"));
-    // }
-
-    // return result.toString();
-
-  // }
-
   // Reads a line from input stream.
   // Returns null if there are no more lines
   public String readLine() throws IOException {
@@ -159,7 +124,7 @@ public class InputReader {
     if (c == NL) return ""; // Empty line
     if (c == EOF) return null; // EOF
     StringBuilder res = new StringBuilder();
-    do { res.appendCodePoint(c); c = read(); }
+    do { res.append(chars[c]); c = read(); }
     while (c != NL && c != EOF); // Spaces & tabs are ok, but not newlines or EOF characters
     return res.toString();    
   }
@@ -178,7 +143,7 @@ public class InputReader {
     } catch (InputMismatchException e) { return null; }
     
     StringBuilder res = new StringBuilder();
-    do { res.appendCodePoint(c); c = read(); }
+    do { res.append(chars[c]); c = read(); }
     while (c > SP); // Still non-space characters
     return res.toString();
   }
