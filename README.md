@@ -109,8 +109,9 @@ byte b3 = in.readByte(); // -1
 byte b4 = in.readByte(); // 0
 byte b5 = in.readByte(); // 0
 byte b6 = in.readByte(); // 1
-byte b7 = in.readByte(); // 126, this byte value overflowed! No safety check gets done for this it is assumed 
-                         // the user knows the range of the values they're reading from the stream                          
+byte b7 = in.readByte(); // 126, this byte value overflowed! No safety check  
+                         // gets done for this. It is assumed the user knows
+                         // the range of the values they're reading from the stream.                          
 byte b8 = in.readByte(); // Nothing left in stream so an error is thrown
 ```
 
