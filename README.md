@@ -82,13 +82,14 @@ String everything = in.readAll();
 ## Examples
 
 ``` java
-// Suppose standard input stream contains "  123     abcdef   3.141592   the quick brown fox\n jumps \nover\n\n the lazy dog"
+// Suppose standard input stream contains the following string we want to read:
+"  123 3.141592    abcdef    the quick brown fox\n jumps \nover\n\n the lazy dog"
 
 InputReader in = new InputReader();
-int intvalue = in.readInt(); // '123'
-String str = in.readStr();   // 'abcdef'
+int intvalue = in.readInt();       // '123'
 double dblvalue = in.readDouble(); // '3.141592'
-String str2 = in.readStr();   // 'the'
-String line = in.readLine(); // 'quick brown fox'
-String rest = in.readAll(); // ' jumps \nover\n\n the lazy dog'
+String str = in.readStr();         // 'abcdef'
+String str2 = in.readStr();        // 'the'
+String line = in.readLine();       // 'quick brown fox'
+String rest = in.readAll();        // ' jumps \nover\n\n the lazy dog'
 ```
