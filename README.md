@@ -24,24 +24,37 @@ String entireFileContents = fileReader.readAll();
 ## InputReader methods
 
 ### .byteInt()
-Read a signed 8 bit integer from the input stream.
+Reads a signed 8 bit integer from the input stream.
 ``` java
 InputReader in = new InputReader();
 byte bytevalue = in.readByte();
 ```
 
 ### .readInt()
-Read a signed 32 bit integer from the input stream.
+Reads a signed 32 bit integer from the input stream.
 ``` java
 InputReader in = new InputReader();
 int intvalue = in.readInt();
 ```
 
 ### .readLong()
-Read a signed 64 bit integer from the input stream.
+Reads a signed 64 bit integer from the input stream.
 ``` java
 InputReader in = new InputReader();
 long longvalue = in.readLong();
 ```
 
+### .readDouble()
+Reads a signed double from the input stream.
+``` java
+InputReader in = new InputReader();
+double doublevalue = in.readDouble();
+```
+
+### .readFastDouble()
+Reads a double value faster (~2.5x) from the input stream than .readDouble() but at the cost of accuracy. The value returned may not be exact because finite floating point number arithmetic (adding, multiplication) being used to quickly compute the next double's value.
+``` java
+InputReader in = new InputReader();
+double doublevalue = in.readDoubleFast();
+```
 
