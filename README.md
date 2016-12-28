@@ -1,6 +1,4 @@
-# Fast Java IO
-
-## InputReader
+# InputReader
 
 The InputReader provides a way to read data from an input stream (much like java.util.Scanner) but many orders of magnitude faster. To get started using the InputReader look at the examples below on how to read various types of data from an input stream. 
 
@@ -17,13 +15,33 @@ String line = stdinReader.readLine();
 // Reading from a file
 FileInputStream fileStream = new FileInputStream("/path/to/the/file");
 InputReader fileReader = new InputReader(fileStream);
-String allFileContents = fileReader.readAll();
+String entireFileContents = fileReader.readAll();
 
 // Reading from Web Socket
-
-
+// Provide examples...
 ```
 
+## InputReader methods
 
+### .byteInt()
+Read a signed 8 bit integer from the input stream.
+``` java
+InputReader in = new InputReader();
+byte bytevalue = in.readByte();
+```
+
+### .readInt()
+Read a signed 32 bit integer from the input stream.
+``` java
+InputReader in = new InputReader();
+int intvalue = in.readInt();
+```
+
+### .readLong()
+Read a signed 64 bit integer from the input stream.
+``` java
+InputReader in = new InputReader();
+long longvalue = in.readLong();
+```
 
 
