@@ -1,18 +1,13 @@
-import java.io.InputStream;
-import java.io.IOException;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.util.InputMismatchException;
 
 public class InputReader {
   
   private int buffer_sz, buf_index, num_bytes_read, c;
   
-  private final byte[] buf; 
-  private final InputStream stream;
+  private final byte[] buf;
+  private final java.io.InputStream stream;
   
-  private static final int DEFAULT_BUFFER_SZ = 65536; // 2^16
-  private static final InputStream DEFAULT_STREAM = System.in;
+  private static final int DEFAULT_BUFFER_SZ = 1 << 16; // 2^16
+  private static final java.io.InputStream DEFAULT_STREAM = System.in;
 
   private static final int EOF   = -1; // End Of File character
   private static final int NL    = 10; // '\n' - New Line (NL)
@@ -20,7 +15,7 @@ public class InputReader {
   private static final int DASH  = 45; // '-'  - Dash character (DOT)
   private static final int DOT   = 46; // '.'  - Dot character (DOT)
   
-  // int lookup table, used for optimizations 
+  // int lookup table, used for optimizations
   private static int[] ints = new int[58];
 
   // char lookup table, used for optimizations
@@ -28,9 +23,9 @@ public class InputReader {
   
   static {
 
-    char ch = ' ';
-    for (int i = 48, value = 0; i < 58; i++, value++ ) ints[i] = value;
-    for (int i = 32; i < 128; i++, ch++) chars[i] = ch;
+    char ch = ' '; int value = 0;
+    for (int i = 48; i <  58; i++ ) ints[i] = value++;
+    for (int i = 32; i < 128; i++) chars[i] = ch++;
 
   }
 
@@ -49,11 +44,11 @@ public class InputReader {
   };
 
   public InputReader () { this(DEFAULT_STREAM, DEFAULT_BUFFER_SZ); }
-  public InputReader (InputStream stream) { this(stream, DEFAULT_BUFFER_SZ); }
+  public InputReader (java.io.InputStream stream) { this(stream, DEFAULT_BUFFER_SZ); }
   public InputReader (int buffer_sz) { this(DEFAULT_STREAM, buffer_sz); }
 
   // Designated constructor
-  public InputReader (InputStream stream, int buffer_sz) {
+  public InputReader (java.io.InputStream stream, int buffer_sz) {
     if (stream == null || buffer_sz <= 0) throw new IllegalArgumentException();
     buf = new byte[buffer_sz];
     this.buffer_sz = buffer_sz;
@@ -63,9 +58,9 @@ public class InputReader {
   // Reads a single character from input
   // returns the byte value of the next character in the buffer.
   // Also returns -1 if there is no more data to read
-  public int read() throws IOException {
+  public int read() throws java.io.IOException {
 
-    if (num_bytes_read == EOF) throw new InputMismatchException();
+    if (num_bytes_read == EOF) throw new java.util.InputMismatchException();
 
     if (buf_index >= num_bytes_read) {
       buf_index = 0;
@@ -77,8 +72,13 @@ public class InputReader {
 
   }
 
+  // Reads a single byte from the input stream
+  public byte readByte() throws java.io.IOException {
+    return (byte) read();
+  }
+
   // Reads a 32bit signed integer from input stream
-  public int readInt() throws IOException {
+  public int readInt() throws java.io.IOException {
     c = read(); int sgn = 1, res = 0;
     while (c <= SP) c = read(); // while c is either: ' ', '\n', EOF
     if (c == DASH) { sgn = -1; c = read(); }
@@ -88,7 +88,7 @@ public class InputReader {
   }
 
   // Reads a 64bit signed integer from input stream
-  public long readLong() throws IOException {
+  public long readLong() throws java.io.IOException {
     c = read();
     while (c <= SP) c = read(); // while c is either: ' ' or '\n'
     int sgn = 1;
@@ -100,11 +100,11 @@ public class InputReader {
   }
 
   // Reads everything in the input stream into a string
-  public String readAll() throws IOException {
+  public String readAll() throws java.io.IOException {
 
     if (num_bytes_read == EOF) return null;
 
-    ByteArrayOutputStream result = new ByteArrayOutputStream(buffer_sz);
+    java.io.ByteArrayOutputStream result = new java.io.ByteArrayOutputStream(buffer_sz);
 
     // Finish writing data currently in the buffer
     result.write(buf, buf_index, num_bytes_read - buf_index);
@@ -119,8 +119,8 @@ public class InputReader {
 
   // Reads a line from input stream.
   // Returns null if there are no more lines
-  public String readLine() throws IOException {
-    try { c=read(); } catch (InputMismatchException e) {return null; }
+  public String readLine() throws java.io.IOException {
+    try { c=read(); } catch (java.util.InputMismatchException e) {return null; }
     if (c == NL) return ""; // Empty line
     if (c == EOF) return null; // EOF
     StringBuilder res = new StringBuilder();
@@ -132,7 +132,7 @@ public class InputReader {
   // Reads a string of characters from the input stream. 
   // The delimiter separating a string of characters is set to be:
   // any ASCII value <= 32 meaning any spaces, new lines, EOF, tabs ...
-  public String readStr() throws IOException {
+  public String readStr() throws java.io.IOException {
     
     c = 0;
 
@@ -140,7 +140,7 @@ public class InputReader {
     try { while (c <= SP) c = read();
 
     // EOF throws exception
-    } catch (InputMismatchException e) { return null; }
+    } catch (java.util.InputMismatchException e) { return null; }
     
     StringBuilder res = new StringBuilder();
     do { res.append(chars[c]); c = read(); }
@@ -150,20 +150,20 @@ public class InputReader {
 
   // Returns an exact value a double value from the input stream.
   // This method is ~2.5x slower than readDoubleFast.
-  public double readDouble() throws IOException {
+  public double readDouble() throws java.io.IOException {
     return Double.valueOf(readStr());
   }
 
   // Very quickly reads a double value from the input stream. However, this method only 
   // returns an approximate double value from input stream. The value is not
   // exact because we're doing arithmetic (adding, multiplication) on finite floating point numbers.
-  @Deprecated public double readDoubleFast() throws IOException {
+  public double readDoubleFast() throws java.io.IOException {
     c = read(); int sgn = 1;
     while (c <= SP) c = read(); // while c is either: ' ', '\n', EOF
     if (c == DASH) { sgn = -1; c = read(); }
     double res = 0.0;
     // while c is not: ' ', '\n', '.' or -1
-    while (c > 46) {res *= 10.0; res += ints[c]; c = read(); }
+    while (c > DOT) {res *= 10.0; res += ints[c]; c = read(); }
     if (c == DOT) {
       int i = 0; c = read();
       // while c is digit and there are < 15 digits after dot
@@ -171,14 +171,6 @@ public class InputReader {
       { res += doubles[ints[c]][i++]; c = read(); }
     }
     return res * sgn;
-  }
-
-  public static void main(String[] args) throws IOException {
-    InputReader in = new InputReader();
-    System.out.println(in.readLine());
-    System.out.println(in.readLine());
-    System.out.println(in.readLine());
-    System.out.println(in.readLine());
   }
 
 }

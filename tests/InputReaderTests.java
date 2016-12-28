@@ -336,13 +336,26 @@ public class InputReaderTests {
       InputStream is = new ByteArrayInputStream(s.getBytes());
       InputReader in = new InputReader(is, buffer_size);
       assertEquals(s, in.readAll());
+      assertEquals(null, in.readStr());
+      assertEquals(null, in.readLine());
+      assertEquals(null, in.readAll());
 
     }
     
   }
 
   @Test
-  public void combinedStringTest1() {
+  public void combinedStringTest1() throws IOException {
+
+    String s = "  123 3.141592    abcdef    the quick brown fox\n jumps \nover\n\n the lazy dog";
+    InputReader in = getReader(s);
+
+    assertEquals( in.readInt(), 123);
+    assertEquals( in.readDouble(), 3.141592, 0.0000001);
+    assertEquals( in.readStr(), "abcdef");
+    assertEquals( in.readStr(), "the");
+    assertEquals( in.readLine(), "quick brown fox");
+    assertEquals( in.readAll(), " jumps \nover\n\n the lazy dog");
 
   }
 
