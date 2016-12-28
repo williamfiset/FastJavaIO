@@ -57,4 +57,25 @@ Reads a double value faster (~2.5x) from the input stream than .readDouble() but
 InputReader in = new InputReader();
 double doublevalue = in.readDoubleFast();
 ```
+### .readStr()
+Reads a string of characters from the input stream. The delimiter separating a string of characters is set to be
+any ASCII value <= 32 meaning any spaces, new lines, EOF characters, tabs... If the input stream is empty null is returned.
+``` java
+InputReader in = new InputReader();
+String str = in.readStr();
+```
+
+### .readAll()
+Reads all remeaning characters found in the input stream and returns it as a String. 
+``` java
+InputReader in = new InputReader();
+String everything = in.readAll();
+```
+
+
+
+## Example usage
+
+
+
 
