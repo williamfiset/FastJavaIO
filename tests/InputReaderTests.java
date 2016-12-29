@@ -272,7 +272,6 @@ public class InputReaderTests {
 
     s = "Apple banana orange\n\n KiWi dragonFRuIt \n   \n  WatERmeOn  \n\n\nPEARS\n\n   ";
     in = getReader(s);
-    
     assertEquals(in.readLine(), "Apple banana orange");
     assertEquals(in.readLine(), "");
     assertEquals(in.readLine(), " KiWi dragonFRuIt ");
@@ -337,6 +336,10 @@ public class InputReaderTests {
     assertEquals(s, in.readAll());
 
     s = "1234567890";
+    in = getReader(s);
+    assertEquals(s, in.readAll());
+
+    s = "Self-education is, I firmly believe, the only kind of education there is. - Isaac Asimov";
     in = getReader(s);
     assertEquals(s, in.readAll());
 

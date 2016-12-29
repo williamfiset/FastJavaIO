@@ -1,7 +1,7 @@
 
 public class InputReader {
   
-  private int buffer_sz, buf_index, num_bytes_read, c;
+  private int c, buffer_sz, buf_index, num_bytes_read;
   
   private final byte[] buf;
   private final java.io.InputStream stream;
@@ -9,24 +9,22 @@ public class InputReader {
   private static final int DEFAULT_BUFFER_SZ = 1 << 16; // 2^16
   private static final java.io.InputStream DEFAULT_STREAM = System.in;
 
-  private static final int EOF   = -1; // End Of File character
-  private static final int NL    = 10; // '\n' - New Line (NL)
-  private static final int SP    = 32; // ' '  - Space character (SP)
-  private static final int DASH  = 45; // '-'  - Dash character (DOT)
-  private static final int DOT   = 46; // '.'  - Dot character (DOT)
-  
-  // int lookup table, used for optimizations
-  private static int[] ints = new int[58];
+  private static final byte EOF   = -1; // End Of File character
+  private static final byte NL    = 10; // '\n' - New Line (NL)
+  private static final byte SP    = 32; // ' '  - Space character (SP)
+  private static final byte DASH  = 45; // '-'  - Dash character (DOT)
+  private static final byte DOT   = 46; // '.'  - Dot character (DOT)
 
-  // char lookup table, used for optimizations
+  // Lookup tables used for optimizations
+  private static byte[] bytes = new byte[58];
+  private static int [] ints  = new int[58];
   private static char[] chars = new char[128];
   
   static {
-
-    char ch = ' '; int value = 0;
-    for (int i = 48; i <  58; i++ ) ints[i] = value++;
-    for (int i = 32; i < 128; i++) chars[i] = ch++;
-
+    char ch = ' '; int value = 0; byte _byte = 0;
+    for (int i = 48; i <  58; i++ ) bytes[i] = _byte++;
+    for (int i = 48; i <  58; i++ )  ints[i] = value++;
+    for (int i = 32; i < 128; i++ ) chars[i] = ch++;
   }
 
   // double lookup table, used for optimizations.
@@ -55,10 +53,10 @@ public class InputReader {
     this.stream = stream;
   }
 
-  // Reads a single character from input
-  // returns the byte value of the next character in the buffer.
-  // Also returns -1 if there is no more data to read
-  public int read() throws java.io.IOException {
+  // Reads a single character from input. 
+  // Returns the byte value of the next character in the buffer.
+  // Also returns EOF if there is no more data to read
+  private byte read() throws java.io.IOException {
 
     if (num_bytes_read == EOF) throw new java.util.InputMismatchException();
 
@@ -68,6 +66,7 @@ public class InputReader {
       if (num_bytes_read == EOF)
         return EOF;
     }
+
     return buf[buf_index++];
 
   }
@@ -79,8 +78,9 @@ public class InputReader {
 
   // Reads a 32bit signed integer from input stream
   public int readInt() throws java.io.IOException {
-    c = read(); int sgn = 1, res = 0;
+    c = read();
     while (c <= SP) c = read(); // while c is either: ' ', '\n', EOF
+    int sgn = 1, res = 0;
     if (c == DASH) { sgn = -1; c = read(); }
     do { res = (res<<3)+(res<<1); res += ints[c]; c = read(); }
     while (c > SP); // Still has digits
@@ -171,6 +171,11 @@ public class InputReader {
       { res += doubles[ints[c]][i++]; c = read(); }
     }
     return res * sgn;
+  }
+
+  // Closes the input stream
+  public void close() throws java.io.IOException {
+    stream.close();
   }
 
 }

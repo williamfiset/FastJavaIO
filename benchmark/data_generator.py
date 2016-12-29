@@ -25,6 +25,16 @@ def rand_numbers():
 # f.close()
 
 
+f = open('short_strings_spaces.txt', 'w')
+for _ in range(100000):
+  s = ""
+  for _ in range(10):
+      s += rand_string( random.randint(1, 50) ) + " "
+  s += '\n'
+  f.write(s)
+f.close()
+
+
 # f = open('integers.txt', 'w')
 # for _ in range(100000):
 #   s = rand_numbers() + "\n"
