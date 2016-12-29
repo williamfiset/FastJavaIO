@@ -26,7 +26,7 @@ String data = socketReader.readStr(); // Read first string
 
 ## InputReader methods
 
-**ALL methods in the InputReader class must be caught or thrown** because they throw an java.io.IOException when something bad happens such as trying to read a byte value from an empty stream. 
+**ALL methods in the InputReader class must be caught or thrown** because they throw an java.io.IOException when something bad happens such as trying to read a byte value from an empty stream. See [here](https://github.com/williamfiset/FastJavaIO#examples) for detailed examples of how to use the methods outlined below.
 
 ### .byteInt()
 Reads a signed 8 bit integer from the input stream.
