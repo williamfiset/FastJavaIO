@@ -17,7 +17,11 @@ FileInputStream fileStream = new FileInputStream("/path/to/the/file");
 InputReader fileReader = new InputReader(fileStream);
 String entireFileContents = fileReader.readAll();
 
-// Reading from Web Socket example coming soon
+// Reading from Web Socket
+Socket socket = new Socket("Some Machine", port);
+InputReader socketReader = new InputReader(socket.getInputStream());
+byte data = socketReader.readStr(); // Read first string
+
 ```
 
 ## InputReader methods
