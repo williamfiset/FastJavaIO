@@ -4,13 +4,11 @@ import java.io.*;
 
 public class BenchMark {
 
-  final static int TRAILS = 5;
+  final static int TRAILS = 20;
 
   // integers_small.txt
-
   final static String INT_FILE = "integer_data/integers.txt";
 
-  // 
   final static String STR_FILE = "string_data/short_strings_spaces.txt";
 
   static void readFile_BufferedReader_readLine() throws IOException {

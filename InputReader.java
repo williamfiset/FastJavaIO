@@ -123,7 +123,7 @@ public class InputReader {
     try { c=read(); } catch (java.util.InputMismatchException e) {return null; }
     if (c == NL) return ""; // Empty line
     if (c == EOF) return null; // EOF
-    StringBuilder res = new StringBuilder();
+    StringBuilder res = new StringBuilder();  
     do { res.append(chars[c]); c = read(); }
     while (c != NL && c != EOF); // Spaces & tabs are ok, but not newlines or EOF characters
     return res.toString();    

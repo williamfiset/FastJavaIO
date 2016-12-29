@@ -12,4 +12,5 @@ javac -cp .:jars/junit-4.12.jar *.java
 # Run tests with junit
 java -cp .:./jars/junit-4.12.jar:./jars/hamcrest-core-1.3.jar org.junit.runner.JUnitCore InputReaderTests
 
+rm *.class
 
