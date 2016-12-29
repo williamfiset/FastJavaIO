@@ -20,7 +20,7 @@ String entireFileContents = fileReader.readAll();
 // Reading from Web Socket
 Socket socket = new Socket("Some Machine", port);
 InputReader socketReader = new InputReader(socket.getInputStream());
-byte data = socketReader.readStr(); // Read first string
+String data = socketReader.readStr(); // Read first string
 
 ```
 
