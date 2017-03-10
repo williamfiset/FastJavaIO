@@ -166,14 +166,14 @@ String s8 = in.readStr(); // null - Returns null when no more strings are found 
 ``` java
 // Suppose standard input stream contains the following string and we want
 // to read it line by line. We can do this using the .readLine() method
-"Apple banana orange\n\n KiWi dragonFRuIt \n   \n  WatERmeOn  \n\n\nPEARS\n\n   "
+"Apple banana orange\n\n KiWi dragonFRuIt \n   \n  WatERmelOn  \n\n\nPEARS\n\n   "
 
 InputReader in = new InputReader();
 String s1  = in.readLine(); // "Apple banana orange"
 String s2  = in.readLine(); // ""
 String s3  = in.readLine(); // " KiWi dragonFRuIt "
 String s4  = in.readLine(); // "   "
-String s5  = in.readLine(); // "  WatERmeOn  "
+String s5  = in.readLine(); // "  WatERmelOn  "
 String s6  = in.readLine(); // ""
 String s7  = in.readLine(); // ""
 String s8  = in.readLine(); // "PEARS"
