@@ -9,6 +9,8 @@ public class BenchMark {
   // integers_small.txt
   final static String INT_FILE = "integer_data/integers.txt";
 
+  final static String DOUBLE_FILE = "double_data/doubles.txt";
+
   final static String STR_FILE = "string_data/short_strings_spaces.txt";
 
   static void readFile_BufferedReader_readLine() throws IOException {
@@ -118,6 +120,29 @@ public class BenchMark {
 
   }
 
+  static void readFile_BufferedReader_readLine_Double_dot_valueOf() throws IOException {
+
+    File f = new File(DOUBLE_FILE);
+    BufferedReader br = new BufferedReader(new FileReader(f));
+    String line;
+
+    long start = System.nanoTime();
+    String[] split;
+    double sum = 0;
+
+    while( (line=br.readLine()) != null ) {
+      split = line.split(" ");
+      for (int i = 0; i < split.length; i++ ) {
+        sum += Double.valueOf(split[i]);
+      }
+    }
+
+    long end = System.nanoTime();
+    System.out.println("BufferedReader split() and Double.valueOf(): " + (end-start)/1e9 );
+    // System.out.println(sum);
+
+  }
+
   static void readFile_BufferedReader_readLine_parseInt() throws IOException {
 
     File f = new File(INT_FILE);
@@ -136,8 +161,8 @@ public class BenchMark {
     }
 
     long end = System.nanoTime();
-    System.out.println( (end-start)/1e9 );
-    System.out.println(sum);
+    System.out.println("BufferedReader split() and parseInt(): " + (end-start)/1e9 );
+    // System.out.println(sum);
 
   }
 
@@ -158,13 +183,67 @@ public class BenchMark {
     } catch (java.util.InputMismatchException e) { }
 
     long end = System.nanoTime();
-    System.out.println( (end-start)/1e9 );
-    System.out.println(sum);
+    System.out.println( "InputReader .readInt(): " + (end-start)/1e9 );
+    // System.out.println(sum);
+
+  }
+
+  static void readFile_InputReader_readDouble() throws IOException {
+
+    File f = new File(DOUBLE_FILE);
+    InputReader in = new InputReader(new FileInputStream(f));
+    String line;
+
+    long start = System.nanoTime();
+    long sum = 0;
+
+    try {
+      while(true) {
+        double d = in.readDouble();
+        sum += d;
+      }
+    } catch (java.util.InputMismatchException e) { }
+
+    long end = System.nanoTime();
+    System.out.println( "InputReader .readDouble(): " + (end-start)/1e9 );
+    // System.out.println(sum);
+
+  }  
+
+  static void readFile_InputReader_readDoubleFast() throws IOException {
+
+    File f = new File(DOUBLE_FILE);
+    InputReader in = new InputReader(new FileInputStream(f));
+    String line;
+
+    long start = System.nanoTime();
+    long sum = 0;
+
+    try {
+      while(true) {
+        double d = in.readDoubleFast();
+        sum += d;
+      }
+    } catch (java.util.InputMismatchException e) { }
+
+    long end = System.nanoTime();
+    System.out.println( "InputReader .readDoubleFast(): " + (end-start)/1e9 );
+    // System.out.println(sum);
 
   }  
 
   public static void main(String[] args) throws IOException {
 
+    System.out.println("Double reading performance BenchMark: ");
+    readFile_BufferedReader_readLine_Double_dot_valueOf();
+    readFile_InputReader_readDouble();
+    readFile_InputReader_readDoubleFast();
+
+    System.out.println("\nInteger reading performance BenchMark: ");
+    readFile_BufferedReader_readLine_parseInt();
+    readFile_InputReader_readInt();
+
+    System.out.println("\nString reading performance BenchMark: ");
     readFile_BufferedReader_readLine();
     readFile_BufferedReader_readLine_with_linesplit();
     readFile_InputReader_readStr();

@@ -151,7 +151,9 @@ public class InputReader {
   // Returns an exact value a double value from the input stream.
   // This method is ~2.5x slower than readDoubleFast.
   public double readDouble() throws java.io.IOException {
-    return Double.valueOf(readStr());
+    String doubleVal = readStr();
+    if (doubleVal == null) throw new java.util.InputMismatchException();
+    return Double.valueOf(doubleVal);
   }
 
   // Very quickly reads a double value from the input stream. However, this method only 
