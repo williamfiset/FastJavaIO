@@ -175,6 +175,48 @@ public class InputReader {
     return res * sgn;
   }
 
+  // Read an array of n byte values
+  public byte[] readByteArray(int n) throws java.io.IOException {
+    byte[] ar = new byte[n];
+    for (int i = 0; i < n; i++) ar[i] = readByte();
+    return ar;
+  }
+
+  // Read an integer array of size n
+  public int[] readIntArray(int n) throws java.io.IOException {
+    int[] ar = new int[n];
+    for (int i = 0; i < n; i++) ar[i] = readInt();
+    return ar;
+  }
+
+  // Read a long array of size n
+  public long[] readLongArray(int n) throws java.io.IOException {
+    long[] ar = new long[n];
+    for (int i = 0; i < n; i++) ar[i] = readLong();
+    return ar;
+  }
+
+  // read an of doubles of size n 
+  public double[] readDoubleArray(int n) throws java.io.IOException {
+    double[] ar = new double[n];
+    for (int i = 0; i < n; i++) ar[i] = readDouble();
+    return ar;
+  }
+
+  // Quickly read an array of doubles
+  public double[] readDoubleArrayFast(int n) throws java.io.IOException {
+    double[] ar = new double[n];
+    for (int i = 0; i < n; i++) ar[i] = readDoubleFast();
+    return ar;
+  }
+  
+  // Read a String array of size n
+  public String[] readStrArray(int n) throws java.io.IOException {
+    String[] ar = new String[n];
+    for (int i = 0; i < n; i++) ar[i] = readStr();
+    return ar;
+  }
+
   // Closes the input stream
   public void close() throws java.io.IOException {
     stream.close();

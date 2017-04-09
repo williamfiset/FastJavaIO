@@ -159,6 +159,20 @@ public class InputReaderTests {
   }
 
   @Test
+  public void testReadIntArray() throws IOException {
+
+    String str = " 1     2  3  4 -5 ";
+    int[] array = {1,2,3,4,-5};
+    InputReader in = getReader(str);
+    int[] ar = in.readIntArray(5);
+
+    assertEquals(array.length, ar.length);
+    for (int i = 0; i < array.length; i++)
+      assertEquals(array[i], ar[i]);
+
+  }
+
+  @Test
   public void testReadString1()  throws IOException {
 
     String str = "a b c";
@@ -322,13 +336,6 @@ public class InputReaderTests {
   }
 
   @Test
-  public void testReadLineDifferentBufferSizes() throws IOException {
-
-    
-
-  }
-
-  @Test
   public void testReadAll() throws IOException {
 
     String s = "\nhello   world\n";
@@ -403,15 +410,6 @@ public class InputReaderTests {
 
   }
 
-  @Test
-  public void combinedStringTest2() {
-
-  }
-  
-  @Test
-  public void combinedStringTest3() {
-
-  }
 
 }
 
