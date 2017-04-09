@@ -6,6 +6,7 @@ public class InputReader {
   private final byte[] buf;
   private final java.io.InputStream stream;
   
+  // private static final int DEFAULT_BUFFER_SZ = 3;
   private static final int DEFAULT_BUFFER_SZ = 1 << 16; // 2^16
   private static final java.io.InputStream DEFAULT_STREAM = System.in;
 
@@ -116,10 +117,11 @@ public class InputReader {
     while ( (num_bytes_read = stream.read(buf)) != EOF)
       result.write(buf, 0, num_bytes_read);
       
-    return result.toString(); // result.toString("UTF-8");
+    return result.toString();
 
   }
 
+  // Double the size of the internal char buffer for strings
   private void doubleCharBufferSz() {
     char[] newBuffer = new char[charBuffer.length << 1];
     for(int i = 0; i < charBuffer.length; i++) newBuffer[i] = charBuffer[i];
@@ -129,6 +131,7 @@ public class InputReader {
   // Reads a line from input stream.
   // Returns null if there are no more lines
   public String readLine() throws java.io.IOException {
+
     try { c=read(); } catch (java.util.InputMismatchException e) { return null; }
     if (c == NL) return ""; // Empty line
     if (c == EOF) return null; // EOF
@@ -139,7 +142,6 @@ public class InputReader {
     do {
 
       while(buf_index < num_bytes_read) {
-
         if (buf[buf_index] != NL) {
           if (si == charBuffer.length) doubleCharBufferSz();
           charBuffer[si++] = (char) buf[buf_index++];
@@ -147,7 +149,6 @@ public class InputReader {
           buf_index++;
           return new String(charBuffer, 0, si);
         }
-
       }
 
       // reload buffer
@@ -158,65 +159,57 @@ public class InputReader {
 
     } while(true);
 
-
-    // while( true ) {
-
-    //   // Reload buffer
-    //   if (buf_index >= num_bytes_read) {
-    //     buf_index = 0;
-    //     num_bytes_read = stream.read(buf);
-    //   }
-
-    //   // Oops reached EOF
-    //   if (num_bytes_read == EOF) return new String(charBuffer, 0, si);
-
-    //   // Double the size!
-    //   if (si == charBuffer.length) {
-    //     char[] newBuf = new char[charBuffer.length << 1];
-    //     for(int i = 0; i < charBuffer.length; i++) newBuf[i] = charBuffer[i];
-    //     charBuffer = newBuf;
-    //   }
-
-    //   // Reached newline
-    //   if (buf[buf_index] == NL) {
-    //     buf_index++;
-    //     return new String(charBuffer, 0, si);
-    //   }
-    //   charBuffer[si++] = (char)buf[buf_index++];
-    // }
-
-    // StringBuilder res = new StringBuilder();  
-    // do { res.append(chars[c]); c = read(); }
-    // while (c != NL && c != EOF); // Spaces & tabs are ok, but not newlines or EOF characters
-    // return res.toString();    
-
   }
 
-  public static void main(String[] args) throws java.io.IOException{
-    InputReader in = new InputReader();
-    System.out.println( "1 " + in.readLine() );
-    System.out.println( "2 " + in.readLine() );
-    System.out.println( "3 " + in.readLine() );
-    System.out.println( "4 " + in.readLine() );
-  }
+  // public static void main(String[] args) throws java.io.IOException{
+  //   InputReader in = new InputReader();
+  //   System.out.println( "|"+in.readStr()+"|");
+  //   System.out.println( "|"+in.readStr()+"|");
+  //   System.out.println( "|"+in.readStr()+"|");
+  // }
 
   // Reads a string of characters from the input stream. 
   // The delimiter separating a string of characters is set to be:
   // any ASCII value <= 32 meaning any spaces, new lines, EOF, tabs ...
   public String readStr() throws java.io.IOException {
-    
-    c = 0;
 
-    // while c is either: ' ' or '\n'
-    try { while (c <= SP) c = read();
+    if (num_bytes_read == EOF) return null;
 
-    // EOF throws exception
-    } catch (java.util.InputMismatchException e) { return null; }
+    // Seek to the first valid position index
+    outer: do {
+      while(buf_index < num_bytes_read) {
+        if (buf[buf_index] > SP) break outer;
+        buf_index++;
+      }
+
+      // reload buffer
+      num_bytes_read = stream.read(buf);
+      if (num_bytes_read == EOF) return null;
+      buf_index = 0;
+
+    } while(true);
     
-    StringBuilder res = new StringBuilder();
-    do { res.append(chars[c]); c = read(); }
-    while (c > SP); // Still non-space characters
-    return res.toString();
+    int si = 0;
+
+    do {
+
+      while(buf_index < num_bytes_read) {
+        if (buf[buf_index] > SP) {
+          if (si == charBuffer.length) doubleCharBufferSz();
+          charBuffer[si++] = (char) buf[buf_index++];
+        } else {
+          buf_index++;
+          return new String(charBuffer, 0, si);
+        }
+      }
+
+      // reload buffer
+      num_bytes_read = stream.read(buf);
+      if (num_bytes_read == EOF) return new String(charBuffer, 0, si);
+      buf_index = 0;
+
+    } while(true);
+
   }
 
   // Returns an exact value a double value from the input stream.
