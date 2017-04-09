@@ -103,24 +103,6 @@ public class InputReader {
     return res * sgn; 
   }
 
-  // Reads everything in the input stream into a string
-  public String readAll() throws java.io.IOException {
-
-    if (num_bytes_read == EOF) return null;
-
-    java.io.ByteArrayOutputStream result = new java.io.ByteArrayOutputStream(buffer_sz);
-
-    // Finish writing data currently in the buffer
-    result.write(buf, buf_index, num_bytes_read - buf_index);
-
-    // Write data until into the result output stream until there is no more
-    while ( (num_bytes_read = stream.read(buf)) != EOF)
-      result.write(buf, 0, num_bytes_read);
-      
-    return result.toString();
-
-  }
-
   // Double the size of the internal char buffer for strings
   private void doubleCharBufferSz() {
     char[] newBuffer = new char[charBuffer.length << 1];

@@ -4,7 +4,7 @@ import java.io.*;
 
 public class BenchMark {
 
-  final static int TRAILS = 20;
+  final static int TRIALS = 20;
 
   // integers_small.txt
   final static String INT_FILE = "integer_data/integers.txt";
@@ -18,7 +18,7 @@ public class BenchMark {
     String line;
     double time = 0;
 
-    for (int i = 0; i < TRAILS; i++ ) {
+    for (int i = 0; i < TRIALS; i++ ) {
 
       File f = new File(STR_FILE);
       BufferedReader br = new BufferedReader(new FileReader(f));
@@ -42,7 +42,7 @@ public class BenchMark {
     String[] split;
     double time = 0;
 
-    for (int i = 0; i < TRAILS; i++ ) {
+    for (int i = 0; i < TRIALS; i++ ) {
 
       File f = new File(STR_FILE);
       BufferedReader br = new BufferedReader(new FileReader(f));
@@ -60,33 +60,15 @@ public class BenchMark {
 
   }
 
-  static void readFile_InputReader_readAll() throws IOException  {
-
-    double time = 0;
-
-    for (int i = 0; i < TRAILS; i++ ) {
-
-      File f = new File(STR_FILE);
-      InputReader in = new InputReader(new FileInputStream(f));
-      long start = System.nanoTime();
-      in.readAll();
-      long end = System.nanoTime();
-      time += ((end-start)/1e9);
-      
-    }
-
-    System.out.println("InputReader .readAll: " + time);
-
-  }
-
   static void readFile_InputReader_readLine() throws IOException  {
 
     double time = 0;
     String line;
-    for (int i = 0; i < TRAILS; i++ ) {
+    for (int i = 0; i < TRIALS; i++ ) {
 
       File f = new File(STR_FILE);
       InputReader in = new InputReader(new FileInputStream(f));
+      // InputReader in = new InputReader(new BufferedInputStream(new FileInputStream(f),1<<16));
       long start = System.nanoTime();
       while( (line=in.readLine()) != null ) {
         // System.out.println(line);
@@ -103,7 +85,7 @@ public class BenchMark {
 
     double time = 0;
     String str;
-    for (int i = 0; i < TRAILS; i++ ) {
+    for (int i = 0; i < TRIALS; i++ ) {
 
       File f = new File(STR_FILE);
       InputReader in = new InputReader(new FileInputStream(f));
@@ -248,7 +230,6 @@ public class BenchMark {
     readFile_BufferedReader_readLine_with_linesplit();
     readFile_InputReader_readStr();
     readFile_InputReader_readLine();
-    readFile_InputReader_readAll();
 
   }
 

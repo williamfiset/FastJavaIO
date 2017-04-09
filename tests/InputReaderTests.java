@@ -6,10 +6,12 @@ import java.io.*;
 
 public class InputReaderTests {
 
+  // Create an input reader with an arbitrary buffer size
   public static InputReader getReader(String s) {
     if (s == null) return null;
     InputStream is = new ByteArrayInputStream(s.getBytes());
-    return new InputReader(is);
+    int buffer_size = 1 + 2; // (int)(Math.random() * 50);
+    return new InputReader(is, buffer_size);
   }
 
   @Test(expected=IllegalArgumentException.class)
@@ -254,10 +256,13 @@ public class InputReaderTests {
     str = "\n\n\nabcdef\n\n\n";
     in = getReader(str);
     assertEquals("abcdef", in.readStr());
+    assertEquals(null, in.readStr());
 
     str = "\n\n\n    abcdef    \n\n\n";
     in = getReader(str);
     assertEquals("abcdef", in.readStr());
+    assertEquals(null, in.readStr());
+    assertEquals(null, in.readStr());
 
   }
 
@@ -333,66 +338,16 @@ public class InputReaderTests {
     assertEquals(null, in.readLine());
     assertEquals(null, in.readLine());
 
-  }
-
-  @Test
-  public void testReadAll() throws IOException {
-
-    String s = "\nhello   world\n";
-    InputReader in = getReader(s);
-    assertEquals(s, in.readAll());
-
-    s = "1234567890";
+    s = "\n  A\n B\n C \n  \nD";
     in = getReader(s);
-    assertEquals(s, in.readAll());
+    assertEquals(in.readLine(), "");
+    assertEquals(in.readLine(), "  A");
+    assertEquals(in.readLine(), " B");
+    assertEquals(in.readLine(), " C ");
+    assertEquals(in.readLine(), "  ");
+    assertEquals(in.readLine(), "D");
 
-    s = "Self-education is, I firmly believe, the only kind of education there is. - Isaac Asimov";
-    in = getReader(s);
-    assertEquals(s, in.readAll());
 
-    s = "\n \n  r \ne  a\nd\nme\n   \n ";
-    in = getReader(s);
-    assertEquals(s, in.readAll());
-
-    s = "  !@\n #$%^ \n &*( sfsdjk0fhbsfp\n\n\n\n  \n\n qpwouwijt59yrh54jge4t439f     \n ruiwghfisbfsfmvdkjf dfgu545$%^$% <>,./ ERwerWERwrwEhGHGsew \n \n    rkeferWRWERWE ";
-    in = getReader(s);
-    assertEquals(s, in.readAll());
-
-  }
-
-  @Test
-  public void testReadAllExtremes() throws IOException {
-
-    String s = "";
-    InputReader in = getReader(s);
-    assertEquals(s, in.readAll());
-
-    s = " ";
-    in = getReader(s);
-    assertEquals(s, in.readAll());    
-
-    s = "\n";
-    in = getReader(s);
-    assertEquals(s, in.readAll());
-
-  }
-
-  @Test
-  public void testReadAllDifferentBufferSizes() throws IOException {
-
-    // Try all buffer sizes from [1, 128]
-    for (int buffer_size = 1; buffer_size <= 128; buffer_size++ ) {
-      
-      String s = "  !@\n #$%^ \n &*( s^fsdjkfhbsfp\n\n\n\n  \n\n qpwouwijt59yrh54jge4t439f     \n ruiwghfisbfsfmvdkjf dfgu545$%^$% <>,./ ERwerWERwrwEhGHGsew \n \n    rkeferWRWERWE ";
-      InputStream is = new ByteArrayInputStream(s.getBytes());
-      InputReader in = new InputReader(is, buffer_size);
-      assertEquals(s, in.readAll());
-      assertEquals(null, in.readStr());
-      assertEquals(null, in.readLine());
-      assertEquals(null, in.readAll());
-
-    }
-    
   }
 
   @Test
@@ -406,7 +361,24 @@ public class InputReaderTests {
     assertEquals( in.readStr(), "abcdef");
     assertEquals( in.readStr(), "the");
     assertEquals( in.readLine(), "quick brown fox");
-    assertEquals( in.readAll(), " jumps \nover\n\n the lazy dog");
+    assertEquals( in.readLine(), " jumps ");
+    assertEquals( in.readStr(), "over");
+    assertEquals( in.readLine(), "");
+    assertEquals( in.readLine(), " the lazy dog");
+
+    String s2 = "123  \n   \n3.45 163\n\n \n4";
+    InputReader in2 = getReader(s2);
+    
+    assertEquals(in2.readInt(), 123);
+    assertEquals(in2.readLine(), " ");
+    assertEquals(in2.readLine(), "   ");
+    assertEquals(in2.readDouble(),3.45, 0.00000001);
+    assertEquals(in2.readInt(), 163);
+    assertEquals(in2.readLine(), "");
+    assertEquals(in2.readLine(), " ");
+    assertEquals(in2.readInt(), 4);
+    
+
 
   }
 
