@@ -20,6 +20,9 @@ public class InputReader {
   private static int [] ints  = new int[58];
   private static char[] chars = new char[128];
   
+  // private static byte[] strBuffer = new byte[128];
+  private static char[] charBuffer = new char[128];
+
   static {
     char ch = ' '; int value = 0; byte _byte = 0;
     for (int i = 48; i <  58; i++ ) bytes[i] = _byte++;
@@ -113,20 +116,88 @@ public class InputReader {
     while ( (num_bytes_read = stream.read(buf)) != EOF)
       result.write(buf, 0, num_bytes_read);
       
-    return result.toString("UTF-8");
+    return result.toString(); // result.toString("UTF-8");
 
+  }
+
+  private void doubleCharBufferSz() {
+    char[] newBuffer = new char[charBuffer.length << 1];
+    for(int i = 0; i < charBuffer.length; i++) newBuffer[i] = charBuffer[i];
+    charBuffer = newBuffer;
   }
 
   // Reads a line from input stream.
   // Returns null if there are no more lines
   public String readLine() throws java.io.IOException {
-    try { c=read(); } catch (java.util.InputMismatchException e) {return null; }
+    try { c=read(); } catch (java.util.InputMismatchException e) { return null; }
     if (c == NL) return ""; // Empty line
     if (c == EOF) return null; // EOF
-    StringBuilder res = new StringBuilder();  
-    do { res.append(chars[c]); c = read(); }
-    while (c != NL && c != EOF); // Spaces & tabs are ok, but not newlines or EOF characters
-    return res.toString();    
+    
+    int si = 0;
+    charBuffer[si++] = (char)c;
+
+    do {
+
+      while(buf_index < num_bytes_read) {
+
+        if (buf[buf_index] != NL) {
+          if (si == charBuffer.length) doubleCharBufferSz();
+          charBuffer[si++] = (char) buf[buf_index++];
+        } else {
+          buf_index++;
+          return new String(charBuffer, 0, si);
+        }
+
+      }
+
+      // reload buffer
+      num_bytes_read = stream.read(buf);
+      if (num_bytes_read == EOF)
+        return new String(charBuffer, 0, si);
+      buf_index = 0;
+
+    } while(true);
+
+
+    // while( true ) {
+
+    //   // Reload buffer
+    //   if (buf_index >= num_bytes_read) {
+    //     buf_index = 0;
+    //     num_bytes_read = stream.read(buf);
+    //   }
+
+    //   // Oops reached EOF
+    //   if (num_bytes_read == EOF) return new String(charBuffer, 0, si);
+
+    //   // Double the size!
+    //   if (si == charBuffer.length) {
+    //     char[] newBuf = new char[charBuffer.length << 1];
+    //     for(int i = 0; i < charBuffer.length; i++) newBuf[i] = charBuffer[i];
+    //     charBuffer = newBuf;
+    //   }
+
+    //   // Reached newline
+    //   if (buf[buf_index] == NL) {
+    //     buf_index++;
+    //     return new String(charBuffer, 0, si);
+    //   }
+    //   charBuffer[si++] = (char)buf[buf_index++];
+    // }
+
+    // StringBuilder res = new StringBuilder();  
+    // do { res.append(chars[c]); c = read(); }
+    // while (c != NL && c != EOF); // Spaces & tabs are ok, but not newlines or EOF characters
+    // return res.toString();    
+
+  }
+
+  public static void main(String[] args) throws java.io.IOException{
+    InputReader in = new InputReader();
+    System.out.println( "1 " + in.readLine() );
+    System.out.println( "2 " + in.readLine() );
+    System.out.println( "3 " + in.readLine() );
+    System.out.println( "4 " + in.readLine() );
   }
 
   // Reads a string of characters from the input stream. 
