@@ -155,14 +155,17 @@ public class BenchMark {
     String line;
 
     long start = System.nanoTime();
-    long sum = 0;
+    long sum = 0, i = 0;
 
     try {
       while(true) {
         int integer = in.readInt();
         sum += integer;
+        // System.out.println(sum);
+        // i++;
+        // if (i%1000 == 0) System.out.println(i + " " + integer);
       }
-    } catch (java.util.InputMismatchException e) { }
+    } catch (java.io.IOException e) { }
 
     long end = System.nanoTime();
     System.out.println( "InputReader .readInt(): " + (end-start)/1e9 );
@@ -184,7 +187,7 @@ public class BenchMark {
         double d = in.readDouble();
         sum += d;
       }
-    } catch (java.util.InputMismatchException e) { }
+    } catch (java.io.IOException e) { }
 
     long end = System.nanoTime();
     System.out.println( "InputReader .readDouble(): " + (end-start)/1e9 );
@@ -206,7 +209,7 @@ public class BenchMark {
         double d = in.readDoubleFast();
         sum += d;
       }
-    } catch (java.util.InputMismatchException e) { }
+    } catch (java.io.IOException e) { }
 
     long end = System.nanoTime();
     System.out.println( "InputReader .readDoubleFast(): " + (end-start)/1e9 );
