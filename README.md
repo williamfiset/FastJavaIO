@@ -91,7 +91,11 @@ double dblvalue = in.readDouble(); // '3.141592'
 String str = in.readStr();         // 'abcdef'
 String str2 = in.readStr();        // 'the'
 String line = in.readLine();       // 'quick brown fox'
-String rest = in.readAll();        // ' jumps \nover\n\n the lazy dog'
+String line1 = in.readLine();      // ' jumps '
+String line2 = in.readLine();      // 'over'
+String line3 = in.readLine();      // ''
+String line4 = in.readLine();      // ' the lazy dog'
+String line5 = in.readLine();      // null
 ```
 
 #### .readByte() examples
@@ -150,8 +154,6 @@ String s5 = in.readStr(); // "dragonFRuIt"
 String s6 = in.readStr(); // "WatERmeOn"
 String s7 = in.readStr(); // "PEARS"
 String s8 = in.readStr(); // null - Returns null when no more strings are found in the input stream
-
-
 ```
 
 #### .readLine() example
@@ -173,6 +175,5 @@ String s8  = in.readLine(); // "PEARS"
 String s9  = in.readLine(); // ""
 String s10 = in.readLine(); // "   "
 String s11 = in.readLine(); // null - No more lines left so null is returned
-
 ```
 
