@@ -77,13 +77,6 @@ InputReader in = new InputReader();
 String line = in.readLine();
 ```
 
-### .readAll()
-Reads all remeaning characters found in the input stream and returns it as a String. 
-``` java
-InputReader in = new InputReader();
-String everything = in.readAll();
-```
-
 ## Examples
 
 #### General case
@@ -182,17 +175,4 @@ String s10 = in.readLine(); // "   "
 String s11 = in.readLine(); // null - No more lines left so null is returned
 
 ```
-
-#### .readAll() example
-
-``` java
-// Suppose standard input stream contains the following string and we want
-// to read it all, then we can do this using the .readAll() method
-"Self-education is, I firmly believe, the only kind of education there is. - Isaac Asimov"
-
-InputReader in = new InputReader();
-String quote = in.readAll(); // read the entire input stream
-
-```
-
 
