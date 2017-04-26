@@ -59,14 +59,14 @@ double doublevalue = in.readDouble();
 ```
 
 ### .readFastDouble()
-Reads a double value ~2.5x times faster from the input stream than .readDouble() but at the cost of accuracy. The value returned may not be exact due to finite floating point number arithmetic (adding, multiplication) used to quickly compute the next double's value.
+Reads a double value ~3x times faster from the input stream than the .readDouble() method, but at the cost of accuracy. The value returned may not be exact due to finite floating point number arithmetic (adding, multiplication) used to quickly compute the next double's value.
 ``` java
 InputReader in = new InputReader();
 double doublevalue = in.readDoubleFast();
 ```
 ### .readStr()
 Reads a string of characters from the input stream. The delimiter separating a string of characters is set to be
-any ASCII value <= 32 meaning any spaces, new lines, EOF characters, tabs... do not count as being part of the string. If the input stream is empty null is returned.
+any ASCII value <= 32 meaning any spaces, new lines, EOF characters, tabs... all of which do not count as being part of the string. If the input stream is empty null is returned.
 ``` java
 InputReader in = new InputReader();
 String str = in.readStr();
