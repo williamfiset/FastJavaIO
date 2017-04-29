@@ -2,7 +2,7 @@
 
 The InputReader provides a way to read data from an input stream (much like java.util.Scanner) but many orders of magnitude faster. Below I have provided a graph outlining the speed differences between this InputReader verses using a BufferedReader. To get started using the InputReader look at the examples below on how to read various types of data from an input stream. 
 
-![Graph](https://raw.githubusercontent.com/williamfiset/FastJavaIO/master/benchmark/images/graph.png)
+![Graph](https://raw.githubusercontent.com/williamfiset/FastJavaIO/master/images/graph.png)
 
 ### Reading from an input stream
 
