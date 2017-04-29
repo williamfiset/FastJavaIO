@@ -26,6 +26,41 @@ String data = socketReader.readStr(); // Read first string
 
 ```
 
+## Getting started
+
+The first set to getting started is to include the **fastjavaio.jar** to your project. If you're running your application on the command-line this can easily be done by adding the jar file to your classpath. 
+
+If you're using a unix like system try:
+```bash
+javac -cp .:fastjavaio.jar MyApp.java
+java -cp .:fastjavaio.jar MyApp
+```
+
+If you're using windows try:
+```bash
+javac -cp .;fastjavaio.jar MyApp.java
+java -cp .;fastjavaio.jar MyApp
+```
+
+To actually use the InputReader class within your application you need to import it from within the fastjavaio package:
+
+``` java
+// imports the InputReader class from the fastjavaio package
+import fastjavaio.InputReader;
+
+public class InputReaderUsageExample {
+  public static void main (String[] args) throws java.io.IOException {
+    
+    // Create an InputReader object that reads data from standard input by default
+    InputReader in = new InputReader();
+    
+    // read input here...
+    
+  }
+}
+
+```
+
 ## InputReader methods
 
 **ALL methods in the InputReader class must be caught or thrown** because they throw an java.io.IOException when something bad happens such as trying to read a byte value from an empty stream. See [here](https://github.com/williamfiset/FastJavaIO#examples) for detailed examples of how to use the methods outlined below.
