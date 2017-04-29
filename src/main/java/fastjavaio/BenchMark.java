@@ -2,16 +2,18 @@ import static java.lang.Math.*;
 import java.util.*;
 import java.io.*;
 
+import fastjavaio.InputReader;
+
 public class BenchMark {
 
   final static int TRIALS = 20;
 
   // integers_small.txt
-  final static String INT_FILE = "integer_data/integers.txt";
+  final static String INT_FILE = "../resources/integer_data/integers.txt";
 
-  final static String DOUBLE_FILE = "double_data/doubles.txt";
+  final static String DOUBLE_FILE = "../resources/double_data/doubles.txt";
 
-  final static String STR_FILE = "string_data/short_strings_spaces.txt";
+  final static String STR_FILE = "../resources/string_data/short_strings_spaces.txt";
 
   static void readFile_BufferedReader_readLine() throws IOException {
 
@@ -144,7 +146,6 @@ public class BenchMark {
 
     long end = System.nanoTime();
     System.out.println("BufferedReader split() and parseInt(): " + (end-start)/1e9 );
-    // System.out.println(sum);
 
   }
 
@@ -169,7 +170,6 @@ public class BenchMark {
 
     long end = System.nanoTime();
     System.out.println( "InputReader .readInt(): " + (end-start)/1e9 );
-    // System.out.println(sum);
 
   }
 
@@ -191,7 +191,6 @@ public class BenchMark {
 
     long end = System.nanoTime();
     System.out.println( "InputReader .readDouble(): " + (end-start)/1e9 );
-    // System.out.println(sum);
 
   }  
 
@@ -213,7 +212,6 @@ public class BenchMark {
 
     long end = System.nanoTime();
     System.out.println( "InputReader .readDoubleFast(): " + (end-start)/1e9 );
-    // System.out.println(sum);
 
   }  
 

@@ -4,7 +4,9 @@ import org.junit.*;
 import java.util.*;
 import java.io.*;
 
-public class InputReaderTests {
+import fastjavaio.InputReader;
+
+public class TestInputReader {
 
   // Create an input reader with an arbitrary buffer size
   public static InputReader getReader(String s) {

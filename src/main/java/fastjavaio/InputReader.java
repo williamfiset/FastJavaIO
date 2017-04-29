@@ -7,6 +7,8 @@
  * @author William Fiset, william.alexandre.fiset@gmail.com
  **/
 
+package fastjavaio;
+
 public class InputReader {
   
   private int c, buffer_sz, buf_index, num_bytes_read;

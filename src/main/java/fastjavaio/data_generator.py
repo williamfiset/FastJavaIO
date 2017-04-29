@@ -66,8 +66,8 @@ def gen_doubles_file(fname = 'doubles.txt', lines = 100000):
         f.write(s)
     f.close()
 
-gen_doubles_file('doubles_small.txt', lines = 10)
-gen_doubles_file()
+#gen_doubles_file('doubles_small.txt', lines = 10)
+#gen_doubles_file()
 
 
 
