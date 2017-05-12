@@ -94,7 +94,7 @@ double doublevalue = in.readDouble();
 ```
 
 ### .readFastDouble()
-Reads a double value ~3x times faster from the input stream than the .readDouble() method, but at the cost of accuracy. This method can only read doubles with at most 21 digits after the decimal point. Furthermore, the value being read may have an error of at most ~5*10^16 (obtained from empirical tests) from its true value due to finite floating point number arithmetic (adding, multiplication) used to perform the quick calculation. 
+Reads a double value ~3x times faster from the input stream than the .readDouble() method, but at the cost of accuracy. This method can only read doubles with at most 21 digits after the decimal point. Furthermore, the value being read may have an error of at most ~5*10^-16 (obtained from empirical tests) from its true value due to finite floating point number arithmetic (adding, multiplication) used to perform the quick calculation. 
 ``` java
 InputReader in = new InputReader();
 double doublevalue = in.readDoubleFast();
