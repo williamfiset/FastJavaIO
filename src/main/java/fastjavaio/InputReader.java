@@ -11,18 +11,18 @@ package fastjavaio;
 
 public class InputReader {
   
-  private int c, buffer_sz, buf_index, num_bytes_read;
+  private int c, bufferSize, bufIndex, numBytesRead;
   
   private final byte[] buf;
   private final java.io.InputStream stream;
   
-  private static final int DEFAULT_BUFFER_SZ = 1 << 16; // 2^16
+  private static final int DEFAULT_BUFFER_SIZE = 1 << 16;
   private static final java.io.InputStream DEFAULT_STREAM = System.in;
 
   private static final byte EOF   = -1; // End Of File (EOF) character
   private static final byte NL    = 10; // '\n' - New Line (NL)
   private static final byte SP    = 32; // ' '  - Space character (SP)
-  private static final byte DASH  = 45; // '-'  - Dash character (DOT)
+  private static final byte DASH  = 45; // '-'  - Dash character (DASH)
   private static final byte DOT   = 46; // '.'  - Dot character (DOT)
 
   // The maximum number of accurate decimal digits .readDoubleFast can read
@@ -57,15 +57,26 @@ public class InputReader {
     { 0.9d,0.09d,0.009d,0.0009d,0.00009d,0.000009d,0.0000009d,0.00000009d,0.000000009d,0.0000000009d,0.00000000009d,0.000000000009d,0.0000000000009d,0.00000000000009d,0.000000000000009d,0.0000000000000009d,0.00000000000000009d,0.000000000000000009d,0.0000000000000000009d,0.00000000000000000009d,0.000000000000000000009d }
   };
 
-  public InputReader () { this(DEFAULT_STREAM, DEFAULT_BUFFER_SZ); }
-  public InputReader (java.io.InputStream stream) { this(stream, DEFAULT_BUFFER_SZ); }
-  public InputReader (int buffer_sz) { this(DEFAULT_STREAM, buffer_sz); }
+  // Support InputStreams
+
+  public InputReader () {
+    this(DEFAULT_STREAM, DEFAULT_BUFFER_SIZE);
+  }
+
+  public InputReader(int bufferSize) {
+    this(DEFAULT_STREAM, bufferSize);
+  }
+
+  public InputReader(java.io.InputStream stream) {
+    this(stream, DEFAULT_BUFFER_SIZE);
+  }
 
   // Designated constructor
-  public InputReader (java.io.InputStream stream, int buffer_sz) {
-    if (stream == null || buffer_sz <= 0) throw new IllegalArgumentException();
-    buf = new byte[buffer_sz];
-    this.buffer_sz = buffer_sz;
+  public InputReader (java.io.InputStream stream, int bufferSize) {
+    if (stream == null || bufferSize <= 0)
+      throw new IllegalArgumentException();
+    buf = new byte[bufferSize];
+    this.bufferSize = bufferSize;
     this.stream = stream;
   }
 
@@ -74,16 +85,16 @@ public class InputReader {
   // Also throws exception if there is no more data to read
   private byte read() throws java.io.IOException {
 
-    if (num_bytes_read == EOF) throw new java.io.IOException();
+    if (numBytesRead == EOF) throw new java.io.IOException();
 
-    if (buf_index >= num_bytes_read) {
-      buf_index = 0;
-      num_bytes_read = stream.read(buf);
-      if (num_bytes_read == EOF)
+    if (bufIndex >= numBytesRead) {
+      bufIndex = 0;
+      numBytesRead = stream.read(buf);
+      if (numBytesRead == EOF)
         return EOF;
     }
 
-    return buf[buf_index++];
+    return buf[bufIndex++];
 
   }
 
@@ -91,20 +102,20 @@ public class InputReader {
   // a character with a higher ASCII value than 'token'
   private int readJunk(int token) throws java.io.IOException { 
     
-    if (num_bytes_read == EOF) return EOF;
+    if (numBytesRead == EOF) return EOF;
 
     // Seek to the first valid position index
     do {
       
-      while(buf_index < num_bytes_read) {
-        if (buf[buf_index] > token) return 0;
-        buf_index++;
+      while(bufIndex < numBytesRead) {
+        if (buf[bufIndex] > token) return 0;
+        bufIndex++;
       }
 
       // reload buffer
-      num_bytes_read = stream.read(buf);
-      if (num_bytes_read == EOF) return EOF;
-      buf_index = 0;
+      numBytesRead = stream.read(buf);
+      if (numBytesRead == EOF) return EOF;
+      bufIndex = 0;
 
     } while(true);
 
@@ -121,25 +132,25 @@ public class InputReader {
     if (readJunk(DASH-1) == EOF) throw new java.io.IOException();
     int sgn = 1, res = 0;
 
-    c = buf[buf_index];
-    if (c == DASH) { sgn = -1; buf_index++; }
+    c = buf[bufIndex];
+    if (c == DASH) { sgn = -1; bufIndex++; }
 
     do {
 
-      while(buf_index < num_bytes_read) {
-        if (buf[buf_index] > SP) {
+      while(bufIndex < numBytesRead) {
+        if (buf[bufIndex] > SP) {
           res = (res<<3)+(res<<1);
-          res += ints[buf[buf_index++]];
+          res += ints[buf[bufIndex++]];
         } else {
-          buf_index++;
+          bufIndex++;
           return res*sgn;
         }
       }
 
       // Reload buffer
-      num_bytes_read = stream.read(buf);
-      if (num_bytes_read == EOF) return res*sgn;
-      buf_index = 0;
+      numBytesRead = stream.read(buf);
+      if (numBytesRead == EOF) return res*sgn;
+      bufIndex = 0;
 
     } while(true);
 
@@ -151,31 +162,32 @@ public class InputReader {
     if (readJunk(DASH-1) == EOF) throw new java.io.IOException();
     int sgn = 1;
     long res = 0L;
-    c = buf[buf_index];
-    if (c == DASH) { sgn = -1; buf_index++; }
+    c = buf[bufIndex];
+    if (c == DASH) { sgn = -1; bufIndex++; }
 
     do {
 
-      while(buf_index < num_bytes_read) {
-        if (buf[buf_index] > SP) {
+      while(bufIndex < numBytesRead) {
+        if (buf[bufIndex] > SP) {
           res = (res<<3)+(res<<1);
-          res += ints[buf[buf_index++]];
+          res += ints[buf[bufIndex++]];
         } else {
-          buf_index++;
+          bufIndex++;
           return res*sgn;
         }
       }
 
       // Reload buffer
-      num_bytes_read = stream.read(buf);
-      if (num_bytes_read == EOF) return res*sgn;
-      buf_index = 0;
+      numBytesRead = stream.read(buf);
+      if (numBytesRead == EOF) return res*sgn;
+      bufIndex = 0;
 
-    } while(true); 
+    } while(true);
+
   }
 
   // Double the size of the internal char buffer for strings
-  private void doubleCharBufferSz() {
+  private void doubleCharBufferSize() {
     char[] newBuffer = new char[charBuffer.length << 1];
     for(int i = 0; i < charBuffer.length; i++) newBuffer[i] = charBuffer[i];
     charBuffer = newBuffer;
@@ -194,21 +206,21 @@ public class InputReader {
 
     do {
 
-      while(buf_index < num_bytes_read) {
-        if (buf[buf_index] != NL) {
-          if (i == charBuffer.length) doubleCharBufferSz();
-          charBuffer[i++] = (char) buf[buf_index++];
+      while(bufIndex < numBytesRead) {
+        if (buf[bufIndex] != NL) {
+          if (i == charBuffer.length) doubleCharBufferSize();
+          charBuffer[i++] = (char) buf[bufIndex++];
         } else {
-          buf_index++;
+          bufIndex++;
           return new String(charBuffer, 0, i);
         }
       }
 
       // Reload buffer
-      num_bytes_read = stream.read(buf);
-      if (num_bytes_read == EOF)
+      numBytesRead = stream.read(buf);
+      if (numBytesRead == EOF)
         return new String(charBuffer, 0, i);
-      buf_index = 0;
+      bufIndex = 0;
 
     } while(true);
 
@@ -217,28 +229,28 @@ public class InputReader {
   // Reads a string of characters from the input stream. 
   // The delimiter separating a string of characters is set to be:
   // any ASCII value <= 32 meaning any spaces, new lines, EOF, tabs ...
-  public String readStr() throws java.io.IOException {
+  public String readString() throws java.io.IOException {
 
-    if (num_bytes_read == EOF) return null;
+    if (numBytesRead == EOF) return null;
     if (readJunk(SP) == EOF) return null;
     int i = 0;
 
     do {
 
-      while(buf_index < num_bytes_read) {
-        if (buf[buf_index] > SP) {
-          if (i == charBuffer.length) doubleCharBufferSz();
-          charBuffer[i++] = (char) buf[buf_index++];
+      while(bufIndex < numBytesRead) {
+        if (buf[bufIndex] > SP) {
+          if (i == charBuffer.length) doubleCharBufferSize();
+          charBuffer[i++] = (char) buf[bufIndex++];
         } else {
-          buf_index++;
+          bufIndex++;
           return new String(charBuffer, 0, i);
         }
       }
 
       // Reload buffer
-      num_bytes_read = stream.read(buf);
-      if (num_bytes_read == EOF) return new String(charBuffer, 0, i);
-      buf_index = 0;
+      numBytesRead = stream.read(buf);
+      if (numBytesRead == EOF) return new String(charBuffer, 0, i);
+      bufIndex = 0;
 
     } while(true);
 
@@ -246,7 +258,7 @@ public class InputReader {
 
   // Returns an exact value a double value from the input stream.
   public double readDouble() throws java.io.IOException {
-    String doubleVal = readStr();
+    String doubleVal = readString();
     if (doubleVal == null) throw new java.io.IOException();
     return Double.valueOf(doubleVal);
   }
@@ -308,9 +320,9 @@ public class InputReader {
   }
   
   // Read a String array of size n
-  public String[] readStrArray(int n) throws java.io.IOException {
+  public String[] readStringArray(int n) throws java.io.IOException {
     String[] ar = new String[n];
-    for (int i = 0; i < n; i++) ar[i] = readStr();
+    for (int i = 0; i < n; i++) ar[i] = readString();
     return ar;
   }
 

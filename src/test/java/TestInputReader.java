@@ -12,7 +12,7 @@ public class TestInputReader {
   public static InputReader getReader(String s) {
     if (s == null) return null;
     InputStream is = new ByteArrayInputStream(s.getBytes());
-    int buffer_size = 1 + 2; // (int)(Math.random() * 50);
+    int buffer_size = 1 + (int)(Math.random() * 50);
     return new InputReader(is, buffer_size);
   }
 
@@ -37,12 +37,12 @@ public class TestInputReader {
       InputStream is = new ByteArrayInputStream(s.getBytes());
       InputReader in = new InputReader(is, buffer_size);
 
-      assertEquals( "abcde", in.readStr() );
+      assertEquals( "abcde", in.readString() );
       assertEquals( 77, in.readInt() );
       assertEquals( -34, in.readInt() );
       assertEquals( 575678, in.readInt() );
-      assertEquals( "AAAA", in.readStr() );
-      assertEquals( "%%%%^^^^^", in.readStr() );
+      assertEquals( "AAAA", in.readString() );
+      assertEquals( "%%%%^^^^^", in.readString() );
       assertEquals( -78787, in.readInt() );
 
     }
@@ -182,21 +182,21 @@ public class TestInputReader {
     String str = "a b c";
     InputReader in = getReader(str);
     
-    assertEquals("a", in.readStr());
-    assertEquals("b", in.readStr());
-    assertEquals("c", in.readStr());
+    assertEquals("a", in.readString());
+    assertEquals("b", in.readString());
+    assertEquals("c", in.readString());
 
     str = "  a   b   c   ";
     in  = getReader(str);
-    assertEquals("a", in.readStr());
-    assertEquals("b", in.readStr());
-    assertEquals("c", in.readStr());
+    assertEquals("a", in.readString());
+    assertEquals("b", in.readString());
+    assertEquals("c", in.readString());
 
     str = "  abcde   bb   ccc   ";
     in  = getReader(str);
-    assertEquals("abcde", in.readStr());
-    assertEquals("bb", in.readStr());
-    assertEquals("ccc", in.readStr());
+    assertEquals("abcde", in.readString());
+    assertEquals("bb", in.readString());
+    assertEquals("ccc", in.readString());
 
   }
 
@@ -206,33 +206,33 @@ public class TestInputReader {
     String str = "a\n b\n c\n";
     InputReader in = getReader(str);
     
-    assertEquals("a", in.readStr());
-    assertEquals("b", in.readStr());
-    assertEquals("c", in.readStr());
+    assertEquals("a", in.readString());
+    assertEquals("b", in.readString());
+    assertEquals("c", in.readString());
 
     str = "  a \n  \nb \n  c\n  \n \n d ";
     in  = getReader(str);
-    assertEquals("a", in.readStr());
-    assertEquals("b", in.readStr());
-    assertEquals("c", in.readStr());
-    assertEquals("d", in.readStr());
+    assertEquals("a", in.readString());
+    assertEquals("b", in.readString());
+    assertEquals("c", in.readString());
+    assertEquals("d", in.readString());
 
     str = "  \n \n abcde \n \n bb  \n \nccc\n   ";
     in  = getReader(str);
-    assertEquals("abcde", in.readStr());
-    assertEquals("bb", in.readStr());
-    assertEquals("ccc", in.readStr());
+    assertEquals("abcde", in.readString());
+    assertEquals("bb", in.readString());
+    assertEquals("ccc", in.readString());
 
     str = "Apple banana orange\n\n KiWi dragonFRuIt \n   \n  WatERmeOn  \n\n\nPEARS\n\n   ";
     in  = getReader(str);
-    assertEquals( in.readStr(), "Apple" );
-    assertEquals( in.readStr(), "banana" );
-    assertEquals( in.readStr(), "orange" );
-    assertEquals( in.readStr(), "KiWi" );
-    assertEquals( in.readStr(), "dragonFRuIt" );
-    assertEquals( in.readStr(), "WatERmeOn" );
-    assertEquals( in.readStr(), "PEARS" );
-    assertNull( in.readStr() );
+    assertEquals( in.readString(), "Apple" );
+    assertEquals( in.readString(), "banana" );
+    assertEquals( in.readString(), "orange" );
+    assertEquals( in.readString(), "KiWi" );
+    assertEquals( in.readString(), "dragonFRuIt" );
+    assertEquals( in.readString(), "WatERmeOn" );
+    assertEquals( in.readString(), "PEARS" );
+    assertNull( in.readString() );
 
   }
 
@@ -241,30 +241,30 @@ public class TestInputReader {
 
     String str = "";
     InputReader in = getReader(str);
-    assertNull(in.readStr());
+    assertNull(in.readString());
 
     str = "\n";
     in = getReader(str);
-    assertNull(in.readStr());
+    assertNull(in.readString());
 
     str = "   ";
     in = getReader(str);
-    assertNull(in.readStr());
+    assertNull(in.readString());
 
     str = "\n\n\n\n\n";
     in = getReader(str);
-    assertNull(in.readStr());
+    assertNull(in.readString());
 
     str = "\n\n\nabcdef\n\n\n";
     in = getReader(str);
-    assertEquals("abcdef", in.readStr());
-    assertEquals(null, in.readStr());
+    assertEquals("abcdef", in.readString());
+    assertEquals(null, in.readString());
 
     str = "\n\n\n    abcdef    \n\n\n";
     in = getReader(str);
-    assertEquals("abcdef", in.readStr());
-    assertEquals(null, in.readStr());
-    assertEquals(null, in.readStr());
+    assertEquals("abcdef", in.readString());
+    assertEquals(null, in.readString());
+    assertEquals(null, in.readString());
 
   }
 
@@ -360,11 +360,11 @@ public class TestInputReader {
 
     assertEquals( in.readInt(), 123);
     assertEquals( in.readDouble(), 3.141592, 0.0000001);
-    assertEquals( in.readStr(), "abcdef");
-    assertEquals( in.readStr(), "the");
+    assertEquals( in.readString(), "abcdef");
+    assertEquals( in.readString(), "the");
     assertEquals( in.readLine(), "quick brown fox");
     assertEquals( in.readLine(), " jumps ");
-    assertEquals( in.readStr(), "over");
+    assertEquals( in.readString(), "over");
     assertEquals( in.readLine(), "");
     assertEquals( in.readLine(), " the lazy dog");
 
