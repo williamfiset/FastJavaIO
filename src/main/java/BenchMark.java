@@ -72,7 +72,7 @@ public class BenchMark {
 
   }
 
-  static void readFile_InputReader_readLine() throws IOException  {
+  static void readFile_InputReader_nextLine() throws IOException  {
 
     double time = 0;
     String line;
@@ -83,7 +83,7 @@ public class BenchMark {
       if (!readingFromSTDIN) in = new InputReader(new FileInputStream(f));
 
       long start = System.nanoTime();
-      while( (line=in.readLine()) != null ) {
+      while( (line=in.nextLine()) != null ) {
         // System.out.println(line);
       }
       long end = System.nanoTime();
@@ -91,10 +91,10 @@ public class BenchMark {
 
     }
 
-    System.out.println("InputReader .readLine: " + time);
+    System.out.println("InputReader .nextLine: " + time);
   }
 
-  static void readFile_InputReader_readStr() throws IOException  {
+  static void readFile_InputReader_nextString() throws IOException  {
 
     String str;
     double time = 0;
@@ -107,7 +107,7 @@ public class BenchMark {
         in = new InputReader(new FileInputStream(f));
 
       long start = System.nanoTime();
-      while( (str=in.readString()) != null ) {
+      while( (str=in.nextString()) != null ) {
         // System.out.println(line);
       }
       long end = System.nanoTime();
@@ -115,7 +115,7 @@ public class BenchMark {
 
     }
 
-    System.out.println("InputReader .readString: " + time);
+    System.out.println("InputReader .nextString: " + time);
 
   }
 
@@ -172,7 +172,7 @@ public class BenchMark {
 
   }
 
-  static void readFile_InputReader_readInt() throws IOException {
+  static void readFile_InputReader_nextInt() throws IOException {
 
     File f = new File(INT_FILE);
     InputReader in = new InputReader(System.in);
@@ -186,7 +186,7 @@ public class BenchMark {
 
     try {
       while(true) {
-        int integer = in.readInt();
+        int integer = in.nextInt();
         sum += integer;
         // System.out.println(sum);
         // i++;
@@ -195,11 +195,11 @@ public class BenchMark {
     } catch (java.io.IOException e) { }
 
     long end = System.nanoTime();
-    System.out.println( "InputReader .readInt(): " + (end-start)/1e9 );
+    System.out.println( "InputReader .nextInt(): " + (end-start)/1e9 );
 
   }
 
-  static void readFile_InputReader_readDouble() throws IOException {
+  static void readFile_InputReader_nextDouble() throws IOException {
 
     File f = new File(DOUBLE_FILE);
     InputReader in = new InputReader(System.in);
@@ -213,17 +213,17 @@ public class BenchMark {
 
     try {
       while(true) {
-        double d = in.readDouble();
+        double d = in.nextDouble();
         sum += d;
       }
     } catch (java.io.IOException e) { }
 
     long end = System.nanoTime();
-    System.out.println( "InputReader .readDouble(): " + (end-start)/1e9 );
+    System.out.println( "InputReader .nextDouble(): " + (end-start)/1e9 );
 
   }  
 
-  static void readFile_InputReader_readDoubleFast() throws IOException {
+  static void readFile_InputReader_nextDoubleFast() throws IOException {
 
     File f = new File(DOUBLE_FILE);
     InputReader in = new InputReader(System.in);
@@ -237,13 +237,13 @@ public class BenchMark {
 
     try {
       while(true) {
-        double d = in.readDoubleFast();
+        double d = in.nextDoubleFast();
         sum += d;
       }
     } catch (java.io.IOException e) { }
 
     long end = System.nanoTime();
-    System.out.println( "InputReader .readDoubleFast(): " + (end-start)/1e9 );
+    System.out.println( "InputReader .nextDoubleFast(): " + (end-start)/1e9 );
 
   }  
 
@@ -267,21 +267,21 @@ public class BenchMark {
     System.out.println("\nPerformance of reading string data from a file: ");
     readFile_BufferedReader_readLine();
     readFile_BufferedReader_readLine_with_linesplit();
-    readFile_InputReader_readStr();
-    readFile_InputReader_readLine();
+    readFile_InputReader_nextString();
+    readFile_InputReader_nextLine();
   }
 
   static void timeReadingIntDataFromFile() throws IOException {
     System.out.println("\nPerformance of reading int data from a file: ");
     readFile_BufferedReader_readLine_parseInt();
-    readFile_InputReader_readInt();
+    readFile_InputReader_nextInt();
   }
 
   static void timeReadingDoubleDataFromFile() throws IOException {
     System.out.println("\nPerformance of reading double data from a file: ");
     readFile_BufferedReader_readLine_Double_dot_valueOf();
-    readFile_InputReader_readDouble();
-    readFile_InputReader_readDoubleFast();
+    readFile_InputReader_nextDouble();
+    readFile_InputReader_nextDoubleFast();
   }
 
   static void timeReadingStringDataFromSTDIN() throws IOException {
@@ -297,11 +297,11 @@ public class BenchMark {
     System.in.reset();
 
     System.in.mark(Integer.MAX_VALUE);
-    readFile_InputReader_readStr();
+    readFile_InputReader_nextString();
     System.in.reset();
     
     System.in.mark(Integer.MAX_VALUE);
-    readFile_InputReader_readLine();
+    readFile_InputReader_nextLine();
     System.in.reset();
 
   }
@@ -315,7 +315,7 @@ public class BenchMark {
     System.in.reset();
     
     System.in.mark(Integer.MAX_VALUE);
-    readFile_InputReader_readInt();
+    readFile_InputReader_nextInt();
     System.in.reset();
 
   }
@@ -329,11 +329,11 @@ public class BenchMark {
     System.in.reset();
 
     System.in.mark(Integer.MAX_VALUE);
-    readFile_InputReader_readDouble();
+    readFile_InputReader_nextDouble();
     System.in.reset();
 
     System.in.mark(Integer.MAX_VALUE);
-    readFile_InputReader_readDoubleFast();
+    readFile_InputReader_nextDoubleFast();
     System.in.reset();
 
   }

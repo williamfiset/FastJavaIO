@@ -25,7 +25,7 @@ public class InputReader {
   private static final byte DASH  = 45; // '-'  - Dash character (DASH)
   private static final byte DOT   = 46; // '.'  - Dot character (DOT)
 
-  // The maximum number of accurate decimal digits .readDoubleFast can read
+  // The maximum number of accurate decimal digits .nextDoubleFast can read
   private static final int MAX_DECIMAL_PRECISION = 21;
 
   // A character buffer I reuse when reading string data.
@@ -56,8 +56,6 @@ public class InputReader {
     { 0.8d,0.08d,0.008d,0.0008d,0.00008d,0.000008d,0.0000008d,0.00000008d,0.000000008d,0.0000000008d,0.00000000008d,0.000000000008d,0.0000000000008d,0.00000000000008d,0.000000000000008d,0.0000000000000008d,0.00000000000000008d,0.000000000000000008d,0.0000000000000000008d,0.00000000000000000008d,0.000000000000000000008d },
     { 0.9d,0.09d,0.009d,0.0009d,0.00009d,0.000009d,0.0000009d,0.00000009d,0.000000009d,0.0000000009d,0.00000000009d,0.000000000009d,0.0000000000009d,0.00000000000009d,0.000000000000009d,0.0000000000000009d,0.00000000000000009d,0.000000000000000009d,0.0000000000000000009d,0.00000000000000000009d,0.000000000000000000009d }
   };
-
-  // Support InputStreams
 
   public InputReader () {
     this(DEFAULT_STREAM, DEFAULT_BUFFER_SIZE);
@@ -122,12 +120,12 @@ public class InputReader {
   }
 
   // Reads a single byte from the input stream
-  public byte readByte() throws java.io.IOException {
-    return (byte) readInt();
+  public byte nextByte() throws java.io.IOException {
+    return (byte) nextInt();
   }
 
   // Reads a 32bit signed integer from input stream
-  public int readInt() throws java.io.IOException {
+  public int nextInt() throws java.io.IOException {
     
     if (readJunk(DASH-1) == EOF) throw new java.io.IOException();
     int sgn = 1, res = 0;
@@ -157,7 +155,7 @@ public class InputReader {
   }
 
   // Reads a 64bit signed integer from input stream
-  public long readLong() throws java.io.IOException {
+  public long nextLong() throws java.io.IOException {
     
     if (readJunk(DASH-1) == EOF) throw new java.io.IOException();
     int sgn = 1;
@@ -195,7 +193,7 @@ public class InputReader {
 
   // Reads a line from input stream.
   // Returns null if there are no more lines
-  public String readLine() throws java.io.IOException {
+  public String nextLine() throws java.io.IOException {
 
     try { c=read(); } catch (java.io.IOException e) { return null; }
     if (c == NL) return ""; // Empty line
@@ -229,7 +227,7 @@ public class InputReader {
   // Reads a string of characters from the input stream. 
   // The delimiter separating a string of characters is set to be:
   // any ASCII value <= 32 meaning any spaces, new lines, EOF, tabs ...
-  public String readString() throws java.io.IOException {
+  public String nextString() throws java.io.IOException {
 
     if (numBytesRead == EOF) return null;
     if (readJunk(SP) == EOF) return null;
@@ -257,17 +255,17 @@ public class InputReader {
   }
 
   // Returns an exact value a double value from the input stream.
-  public double readDouble() throws java.io.IOException {
-    String doubleVal = readString();
+  public double nextDouble() throws java.io.IOException {
+    String doubleVal = nextString();
     if (doubleVal == null) throw new java.io.IOException();
     return Double.valueOf(doubleVal);
   }
 
-  // Very quickly reads a double value from the input stream (~3x faster than readDouble()). However,
-  // this method may provide a slightly less accurate reading than .readDouble() if there are a lot
+  // Very quickly reads a double value from the input stream (~3x faster than nextDouble()). However,
+  // this method may provide a slightly less accurate reading than .nextDouble() if there are a lot
   // of digits (~16+). In particular, it will only read double values with at most 21 digits after
   // the decimal point and the reading my be as inaccurate as ~5*10^16 from the true value.
-  public double readDoubleFast() throws java.io.IOException {
+  public double nextDoubleFast() throws java.io.IOException {
     c = read(); int sgn = 1;
     while (c <= SP) c = read(); // while c is either: ' ', '\n', EOF
     if (c == DASH) { sgn = -1; c = read(); }
@@ -285,45 +283,202 @@ public class InputReader {
   }
 
   // Read an array of n byte values
-  public byte[] readByteArray(int n) throws java.io.IOException {
+  public byte[] nextByteArray(int n) throws java.io.IOException {
     byte[] ar = new byte[n];
-    for (int i = 0; i < n; i++) ar[i] = readByte();
+    for (int i = 0; i < n; i++) ar[i] = nextByte();
     return ar;
   }
 
+  // Read an array of n char values
+  public char[] nextCharArray(int n) throws java.io.IOException {
+    String str = nextString();
+    if (str == null) return null;
+    return str.toCharArray();
+  }
+
   // Read an integer array of size n
-  public int[] readIntArray(int n) throws java.io.IOException {
+  public int[] nextIntArray(int n) throws java.io.IOException {
     int[] ar = new int[n];
-    for (int i = 0; i < n; i++) ar[i] = readInt();
+    for (int i = 0; i < n; i++) ar[i] = nextInt();
     return ar;
   }
 
   // Read a long array of size n
-  public long[] readLongArray(int n) throws java.io.IOException {
+  public long[] nextLongArray(int n) throws java.io.IOException {
     long[] ar = new long[n];
-    for (int i = 0; i < n; i++) ar[i] = readLong();
+    for (int i = 0; i < n; i++) ar[i] = nextLong();
     return ar;
   }
 
   // read an of doubles of size n 
-  public double[] readDoubleArray(int n) throws java.io.IOException {
+  public double[] nextDoubleArray(int n) throws java.io.IOException {
     double[] ar = new double[n];
-    for (int i = 0; i < n; i++) ar[i] = readDouble();
+    for (int i = 0; i < n; i++) ar[i] = nextDouble();
     return ar;
   }
 
   // Quickly read an array of doubles
-  public double[] readDoubleArrayFast(int n) throws java.io.IOException {
+  public double[] nextDoubleArrayFast(int n) throws java.io.IOException {
     double[] ar = new double[n];
-    for (int i = 0; i < n; i++) ar[i] = readDoubleFast();
+    for (int i = 0; i < n; i++) ar[i] = nextDoubleFast();
     return ar;
   }
   
-  // Read a String array of size n
-  public String[] readStringArray(int n) throws java.io.IOException {
+  // Read a string array of size n
+  public String[] nextStringArray(int n) throws java.io.IOException {
     String[] ar = new String[n];
-    for (int i = 0; i < n; i++) ar[i] = readString();
+    for (int i = 0; i < n; i++) ar[i] = nextString();
     return ar;
+  }
+
+  // Read a 1-based byte array of size n+1
+  public byte[] nextByteArray1(int n) throws java.io.IOException {
+    byte[] ar = new byte[n+1];
+    for (int i = 1; i <= n; i++) ar[i] = nextByte();
+    return ar;
+  }
+
+  // Read a 1-based integer array of size n+1
+  public int[] nextIntArray1(int n) throws java.io.IOException {
+    int[] ar = new int[n+1];
+    for (int i = 1; i <= n; i++) ar[i] = nextInt();
+    return ar;
+  }
+
+  // Read a 1-based long array of size n+1
+  public long[] nextLongArray1(int n) throws java.io.IOException {
+    long[] ar = new long[n+1];
+    for (int i = 1; i <= n; i++) ar[i] = nextLong();
+    return ar;
+  }
+
+  // Read a 1-based double array of size n+1
+  public double[] nextDoubleArray1(int n) throws java.io.IOException {
+    double[] ar = new double[n+1];
+    for (int i = 1; i <= n; i++) ar[i] = nextDouble();
+    return ar;
+  }
+
+  // Quickly read a 1-based double array of size n+1
+  public double[] nextDoubleArrayFast1(int n) throws java.io.IOException {
+    double[] ar = new double[n+1];
+    for (int i = 1; i <= n; i++) ar[i] = nextDoubleFast();
+    return ar;
+  }
+
+  // Read a 1-based string array of size n+1
+  public String[] nextStringArray1(int n) throws java.io.IOException {
+    String[] ar = new String[n+1];
+    for (int i = 1; i <= n; i++) ar[i] = nextString();
+    return ar;
+  }
+
+  // Read a two dimensional matrix of bytes of size rows x cols
+  public byte[][] nextByteMatrix(int rows, int cols) throws java.io.IOException {
+    byte[][] matrix = new byte[rows][cols];
+    for(int i = 0; i < rows; i++)
+      for (int j = 0; j < cols; j++)
+        matrix[i][j] = nextByte();
+    return matrix;
+  }
+
+  // Read a two dimensional matrix of ints of size rows x cols
+  public int[][] nextIntMatrix(int rows, int cols) throws java.io.IOException {
+    int[][] matrix = new int[rows][cols];
+    for(int i = 0; i < rows; i++)
+      for (int j = 0; j < cols; j++)
+        matrix[i][j] = nextInt();
+    return matrix;
+  }
+
+  // Read a two dimensional matrix of longs of size rows x cols
+  public long[][] nextLongMatrix(int rows, int cols) throws java.io.IOException {
+    long[][] matrix = new long[rows][cols];
+    for(int i = 0; i < rows; i++)
+      for (int j = 0; j < cols; j++)
+        matrix[i][j] = nextLong();
+    return matrix;
+  }
+
+  // Read a two dimensional matrix of doubles of size rows x cols
+  public double[][] nextDoubleMatrix(int rows, int cols) throws java.io.IOException {
+    double[][] matrix = new double[rows][cols];
+    for(int i = 0; i < rows; i++)
+      for (int j = 0; j < cols; j++)
+        matrix[i][j] = nextDouble();
+    return matrix;
+  }
+
+  // Quickly read a two dimensional matrix of doubles of size rows x cols
+  public double[][] nextDoubleMatrixFast(int rows, int cols) throws java.io.IOException {
+    double[][] matrix = new double[rows][cols];
+    for(int i = 0; i < rows; i++)
+      for (int j = 0; j < cols; j++)
+        matrix[i][j] = nextDoubleFast();
+    return matrix;
+  }
+  
+  // Read a two dimensional matrix of Strings of size rows x cols
+  public String[][] nextStringMatrix(int rows, int cols) throws java.io.IOException {
+    String[][] matrix = new String[rows][cols];
+    for(int i = 0; i < rows; i++)
+      for (int j = 0; j < cols; j++)
+        matrix[i][j] = nextString();
+    return matrix;    
+  }
+
+  // Read a 1-based two dimensional matrix of bytes of size rows x cols
+  public byte[][] nextByteMatrix1(int rows, int cols) throws java.io.IOException {
+    byte[][] matrix = new byte[rows+1][cols+1];
+    for(int i = 1; i <= rows; i++)
+      for (int j = 1; j <= cols; j++)
+        matrix[i][j] = nextByte();
+    return matrix;
+  }
+
+  // Read a 1-based two dimensional matrix of ints of size rows x cols
+  public int[][] nextIntMatrix1(int rows, int cols) throws java.io.IOException {
+    int[][] matrix = new int[rows+1][cols+1];
+    for(int i = 1; i <= rows; i++)
+      for (int j = 1; j <= cols; j++)
+        matrix[i][j] = nextInt();
+    return matrix;
+  }
+
+  // Read a 1-based two dimensional matrix of longs of size rows x cols
+  public long[][] nextLongMatrix1(int rows, int cols) throws java.io.IOException {
+    long[][] matrix = new long[rows+1][cols+1];
+    for(int i = 1; i <= rows; i++)
+      for (int j = 1; j <= cols; j++)
+        matrix[i][j] = nextLong();
+    return matrix;
+  }
+
+  // Read a 1-based two dimensional matrix of doubles of size rows x cols
+  public double[][] nextDoubleMatrix1(int rows, int cols) throws java.io.IOException {
+    double[][] matrix = new double[rows+1][cols+1];
+    for(int i = 1; i <= rows; i++)
+      for (int j = 1; j <= cols; j++)
+        matrix[i][j] = nextDouble();
+    return matrix;
+  }
+
+  // Quickly read a 1-based two dimensional matrix of doubles of size rows x cols
+  public double[][] nextDoubleMatrixFast1(int rows, int cols) throws java.io.IOException {
+    double[][] matrix = new double[rows+1][cols+1];
+    for(int i = 1; i <= rows; i++)
+      for (int j = 1; j <= cols; j++)
+        matrix[i][j] = nextDoubleFast();
+    return matrix;
+  }
+  
+  // Read a 1-based two dimensional matrix of Strings of size rows x cols
+  public String[][] nextStringMatrix1(int rows, int cols) throws java.io.IOException {
+    String[][] matrix = new String[rows+1][cols+1];
+    for(int i = 1; i <= rows; i++)
+      for (int j = 1; j <= cols; j++)
+        matrix[i][j] = nextString();
+    return matrix;    
   }
 
   // Closes the input stream
