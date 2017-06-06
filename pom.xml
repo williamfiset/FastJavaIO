@@ -29,12 +29,12 @@
     <resources>
         <resource>
             <directory>src/main/java</directory>
-            <includes>
-                <include>fastjavaio/InputReader.java</include>
-            </includes>
+            <!-- <includes> -->
+              <!-- <include>fastjavaio/InputReader.java</include> -->
+            <!-- </includes> -->
             <excludes>
               <exclude>**/*.java</exclude>
-              <exclude>**/*.class</exclude>
+              <exclude>*.class</exclude>
             </excludes>
         </resource>
     </resources>
