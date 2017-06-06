@@ -22,7 +22,7 @@ String line = fileReader.nextLine();
 // Reading from Web Socket
 Socket socket = new Socket("Some Machine", port);
 InputReader socketReader = new InputReader(socket.getInputStream());
-String data = socketReader.nextStr(); // Read first string
+String data = socketReader.nextString(); // Read first string
 
 ```
 
