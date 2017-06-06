@@ -99,12 +99,12 @@ Reads a double value ~3x times faster from the input stream than the .nextDouble
 InputReader in = new InputReader();
 double doublevalue = in.nextDoubleFast();
 ```
-### .nextStr()
+### .nextString()
 Reads a string of characters from the input stream. The delimiter separating a string of characters is set to be
 any ASCII value <= 32 meaning any spaces, new lines, EOF characters, tabs... all of which do not count as being part of the string. If the input stream is empty null is returned.
 ``` java
 InputReader in = new InputReader();
-String str = in.nextStr();
+String str = in.nextString();
 ```
 
 ### .nextLine()
@@ -125,8 +125,8 @@ String line = in.nextLine();
 InputReader in = new InputReader();
 int intvalue = in.nextInt();       // '123'
 double dblvalue = in.nextDouble(); // '3.141592'
-String str = in.nextStr();         // 'abcdef'
-String str2 = in.nextStr();        // 'the'
+String str = in.nextString();         // 'abcdef'
+String str2 = in.nextString();        // 'the'
 String line = in.nextLine();       // 'quick brown fox'
 String line1 = in.nextLine();      // ' jumps '
 String line2 = in.nextLine();      // 'over'
@@ -174,23 +174,23 @@ int integer8 = in.nextInt(); // -727379969, this int value overflowed! No safety
 int integer9 = in.nextInt(); // Nothing left in stream so an error is thrown
 ```
 
-#### .nextStr() example
+#### .nextString() example
 
 ``` java
 // Suppose standard input stream contains the following string and we want
 // to read the individual fruits names contained inside this sentence. We
-// Can easily do this by using the .nextStr()
+// Can easily do this by using the .nextString()
 "Apple banana orange\n\n KiWi dragonFRuIt \n   \n  WatERmeOn  \n\n\nPEARS\n\n   "
 
 InputReader in = new InputReader();
-String s1 = in.nextStr(); // "Apple"
-String s2 = in.nextStr(); // "banana"
-String s3 = in.nextStr(); // "orange"
-String s4 = in.nextStr(); // "KiWi"
-String s5 = in.nextStr(); // "dragonFRuIt"
-String s6 = in.nextStr(); // "WatERmeOn"
-String s7 = in.nextStr(); // "PEARS"
-String s8 = in.nextStr(); // null - Returns null when no more strings are found in the input stream
+String s1 = in.nextString(); // "Apple"
+String s2 = in.nextString(); // "banana"
+String s3 = in.nextString(); // "orange"
+String s4 = in.nextString(); // "KiWi"
+String s5 = in.nextString(); // "dragonFRuIt"
+String s6 = in.nextString(); // "WatERmeOn"
+String s7 = in.nextString(); // "PEARS"
+String s8 = in.nextString(); // null - Returns null when no more strings are found in the input stream
 ```
 
 #### .nextLine() example
