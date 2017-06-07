@@ -290,11 +290,12 @@ public class InputReader {
   }
 
   // Read an array of n char values
-  public char[] nextCharArray(int n) throws java.io.IOException {
-    String str = nextString();
-    if (str == null) return null;
-    return str.toCharArray();
-  }
+  // Buggy method must patch
+  // public char[] nextCharArray(int n) throws java.io.IOException {
+  //   String str = nextString();
+  //   if (str == null) return null;
+  //   return str.toCharArray();
+  // }
 
   // Read an integer array of size n
   public int[] nextIntArray(int n) throws java.io.IOException {
@@ -327,7 +328,11 @@ public class InputReader {
   // Read a string array of size n
   public String[] nextStringArray(int n) throws java.io.IOException {
     String[] ar = new String[n];
-    for (int i = 0; i < n; i++) ar[i] = nextString();
+    for (int i = 0; i < n; i++) {
+      String str = nextString();
+      if (str == null) throw new java.io.IOException();
+      ar[i] = str;
+    }
     return ar;
   }
 

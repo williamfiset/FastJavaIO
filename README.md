@@ -69,7 +69,7 @@ public class InputReaderUsageExample {
 Reads a signed 8 bit integer from the input stream.
 ``` java
 InputReader in = new InputReader();
-byte bytevalue = in.nextByte();
+byte byteValue = in.nextByte();
 ```
 
 ### .nextInt()
@@ -83,25 +83,25 @@ int intValue = in.nextInt();
 Reads a signed 64 bit integer from the input stream.
 ``` java
 InputReader in = new InputReader();
-long longvalue = in.nextLong();
+long longValue = in.nextLong();
 ```
 
 ### .nextDouble()
 Reads a signed double from the input stream.
 ``` java
 InputReader in = new InputReader();
-double doublevalue = in.nextDouble();
+double doubleValue = in.nextDouble();
 ```
 
 ### .nextDoubleFast()
-Reads a double value ~3x times faster from the input stream than the .nextDouble() method, but at the cost of accuracy. This method can only read doubles with at most 21 digits after the decimal point. Furthermore, the value being read may have an error of at most ~5*10^-16 (obtained from empirical tests) from its true value due to finite floating point number arithmetic (adding, multiplication) used to perform the quick calculation. 
+Reads a double value ~3x times faster from the input stream than the .nextDouble() method, but at the cost of accuracy. This method can only read doubles with at most 21 digits after the decimal point. Furthermore, the value being read may have an error of at most ~5*10^-16 (obtained from empirical tests) from its true value due to finite floating point number arithmetic (adding, multiplication) used to perform the quick calculation.
 ``` java
 InputReader in = new InputReader();
-double doublevalue = in.nextDoubleFast();
+double doubleValue = in.nextDoubleFast();
 ```
 ### .nextString()
 Reads a string of characters from the input stream. The delimiter separating a string of characters is set to be
-any ASCII value <= 32 meaning any spaces, new lines, EOF characters, tabs... all of which do not count as being part of the string. If the input stream is empty null is returned.
+any ASCII value <= 32, meaning any spaces, new lines, EOF characters, tabs... all of which do not count as being part of the string. If the input stream is empty null is returned.
 ``` java
 InputReader in = new InputReader();
 String str = in.nextString();
@@ -113,6 +113,68 @@ Reads a line of characters from the input stream until a new line character is r
 InputReader in = new InputReader();
 String line = in.nextLine();
 ```
+
+### .nextByteArray(int n)
+
+Reads n byte values into a byte array. If the specified value of n is too large and not enough bytes are found an exception is thrown.
+
+```java
+InputReader in = new InputReader();
+int bytesToRead = 16;
+byte[] bytes = in.nextByteArray(bytesToRead);
+```
+
+### .nextIntArray(int n)
+
+Reads n signed 32bit integer values into an array. If the specified value of n is too large and not enough integers are found an exception is thrown.
+
+```java
+InputReader in = new InputReader();
+int integersToRead = 16;
+int[] integers = in.nextIntArray(integersToRead);
+```
+
+### .nextLongArray(int n)
+
+Reads n signed 64bit long values into an array. If the specified value of n is too large and not enough longs are found an exception is thrown.
+
+```java
+InputReader in = new InputReader();
+int longsToRead = 16;
+long[] longs = in.nextLongArray(longsToRead);
+```
+
+### .nextDoubleArray(int n)
+
+Reads n double values into an array. If the specified value of n is too large and not enough doubles are found an exception is thrown.
+
+```java
+InputReader in = new InputReader();
+int doublesToRead = 16;
+double[] doubles = in.nextDoubleArray(doublesToRead);
+```
+
+### .nextDoubleArrayFast(int n)
+
+Quickly reads n double values into an array using the .nextDoubleFast() method. If the specified value of n is too large and not enough doubles are found an exception is thrown.
+
+```java
+InputReader in = new InputReader();
+int doublesToRead = 16;
+double[] doubles = in.nextDoubleArrayFast(doublesToRead);
+```
+
+### .nextStringArray(int n)
+
+Reads n space separated strings into an array. If the specified value of n is too large and not enough strings are found in the input stream an exception is thrown.
+
+```java
+InputReader in = new InputReader();
+int stringsToRead = 16;
+String[] strings = in.nextStringArray(stringsToRead);
+```
+
+**NOTE**: If you want to read data into a 1-based array instead of a 0-based array methods such as .nextByteArray1(int n), .nextIntArray1(int n), nextLongArray1(int n), nextDoubleArray1(int n), nextDoubleArrayFast1(int n), and nextStringArray1(int n) exist for such a purpose.
 
 ## Examples
 
@@ -151,7 +213,7 @@ byte b6 = in.nextByte(); // 1
 byte b7 = in.nextByte(); // 126, this byte value overflowed! No safety check
                          // gets done for this. It is assumed the user knows
                          // the range of the values they're reading from the stream.
-byte b8 = in.nextByte(); // Nothing left in stream so an error is thrown
+byte b8 = in.nextByte(); // Nothing left in stream so an exception is thrown
 ```
 
 #### .nextInt() examples
@@ -169,9 +231,9 @@ int integer5 = in.nextInt(); // 0
 int integer6 = in.nextInt(); // 0
 int integer7 = in.nextInt(); // 1
 int integer8 = in.nextInt(); // -727379969, this int value overflowed! No safety check   
-                             // gets done for this.It is assumed the user knows the 
+                             // gets done for this. It is assumed the user knows the 
                              // range of the values they're reading from the stream
-int integer9 = in.nextInt(); // Nothing left in stream so an error is thrown
+int integer9 = in.nextInt(); // Nothing left in stream so an exception is thrown
 ```
 
 #### .nextString() example
