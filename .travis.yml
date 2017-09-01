@@ -6,11 +6,11 @@ jdk:
   - oraclejdk8
   - oraclejdk7
 script:
-  - mvn clean verify
+  - mvn verify
 
 # Checks for broken links in README.md
-language: ruby
-rvm: 2.2
-before_script: gem install awesome_bot
-script: awesome_bot README.md --allow-dupe --allow-redirect
+#language: ruby
+#rvm: 2.2
+#before_script: gem install awesome_bot
+#script: awesome_bot README.md --allow-dupe --allow-redirect
 
