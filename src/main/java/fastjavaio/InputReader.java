@@ -56,20 +56,35 @@ public class InputReader {
     { 0.8d,0.08d,0.008d,0.0008d,0.00008d,0.000008d,0.0000008d,0.00000008d,0.000000008d,0.0000000008d,0.00000000008d,0.000000000008d,0.0000000000008d,0.00000000000008d,0.000000000000008d,0.0000000000000008d,0.00000000000000008d,0.000000000000000008d,0.0000000000000000008d,0.00000000000000000008d,0.000000000000000000008d },
     { 0.9d,0.09d,0.009d,0.0009d,0.00009d,0.000009d,0.0000009d,0.00000009d,0.000000009d,0.0000000009d,0.00000000009d,0.000000000009d,0.0000000000009d,0.00000000000009d,0.000000000000009d,0.0000000000000009d,0.00000000000000009d,0.000000000000000009d,0.0000000000000000009d,0.00000000000000000009d,0.000000000000000000009d }
   };
-
+  
+  /**
+   * Create an InputReader that reads from standard input.
+   */
   public InputReader () {
     this(DEFAULT_STREAM, DEFAULT_BUFFER_SIZE);
   }
-
+  
+  /**
+   * Create an InputReader that reads from standard input.
+   * @param bufferSize    The buffer size for this input reader.
+   */
   public InputReader(int bufferSize) {
     this(DEFAULT_STREAM, bufferSize);
   }
-
+  
+  /**
+   * Create an InputReader that reads from standard input.
+   * @param stream  Takes an InputStream as a parameter to read from.
+   */
   public InputReader(java.io.InputStream stream) {
     this(stream, DEFAULT_BUFFER_SIZE);
   }
 
-  // Designated constructor
+  /**
+   * Create an InputReader that reads from standard input.
+   * @param  stream        Takes an InputStream as a parameter to read from.
+   * @param  bufferSize    The size of the buffer to use.
+   */
   public InputReader (java.io.InputStream stream, int bufferSize) {
     if (stream == null || bufferSize <= 0)
       throw new IllegalArgumentException();
@@ -77,10 +92,13 @@ public class InputReader {
     this.bufferSize = bufferSize;
     this.stream = stream;
   }
-
-  // Reads a single character from the input stream.
-  // Returns the byte value of the next character in the buffer.
-  // Also throws exception if there is no more data to read
+  
+  /**
+   * Reads a single character from the input stream.
+   * @return Returns the byte value of the next character in the buffer and EOF 
+   * at the end of the stream.
+   * @throws java.io.IOException throws exception if there is no more data to read
+   */
   private byte read() throws java.io.IOException {
 
     if (numBytesRead == EOF) throw new java.io.IOException();
