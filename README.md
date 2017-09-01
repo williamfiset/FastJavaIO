@@ -28,7 +28,7 @@ String data = socketReader.nextString(); // Read first string
 
 ## Getting started
 
-The first step to getting started with the InputReader is to include the **[fastjavaio.jar](https://githu.com/williamfiset/FastJavaIO/releases/download/1.1/fastjavaio.jar)** to your project. If you're running your application on the command-line this can easily be done by adding the jar file to your CLASSPATH.
+The first step to getting started with the InputReader is to include the **[fastjavaio.jar](https://github.com/williamfiset/FastJavaIO/releases/download/1.1/fastjavaio.jar)** to your project. If you're running your application on the command-line this can easily be done by adding the jar file to your CLASSPATH.
 
 If you're using a unix like system try:
 ```bash
