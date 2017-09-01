@@ -21,11 +21,6 @@ public class TestInputReader {
     new InputReader( 0 );
   }
 
-  @Test
-  public void travisCITest() {
-    assertTrue(false);
-  }
-
   @Test(expected=IllegalArgumentException.class)
   public void testIllegalBufferSz2() {
     new InputReader( -1 );
