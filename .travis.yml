@@ -6,7 +6,7 @@ jdk:
   - oraclejdk8
   - oraclejdk7
 script:
-  mvn clean verify
+  - mvn clean verify
 
 # Checks for broken links in README.md
 language: ruby
