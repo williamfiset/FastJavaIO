@@ -324,7 +324,7 @@ public class InputReader {
   // Very quickly reads a double value from the input stream (~3x faster than nextDouble()). However,
   // this method may provide a slightly less accurate reading than .nextDouble() if there are a lot
   // of digits (~16+). In particular, it will only read double values with at most 21 digits after
-  // the decimal point and the reading my be as inaccurate as ~5*10^16 from the true value.
+  // the decimal point and the reading my be as inaccurate as ~5*10^-16 from the true value.
   public double nextDoubleFast() throws IOException {
     c = read(); int sgn = 1;
     while (c <= SP) c = read(); // while c is either: ' ', '\n', EOF
