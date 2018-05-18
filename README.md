@@ -174,12 +174,12 @@ String[] strings = in.nextStringArray(stringsToRead);
 ```
 
 **NOTE**: If you want to read data into a 1-based array instead of a 0-based array you can use the following methods exist for such a purpose:
-* .nextByteArray1(int n)
-* .nextIntArray1(int n)
-* .nextLongArray1(int n)
-* .nextDoubleArray1(int n)
-* .nextDoubleArrayFast1(int n)
-* .nextStringArray1(int n)
+* nextByteArray1(int n)
+* nextIntArray1(int n)
+* nextLongArray1(int n)
+* nextDoubleArray1(int n)
+* nextDoubleArrayFast1(int n)
+* nextStringArray1(int n)
 
 ## Examples
 
