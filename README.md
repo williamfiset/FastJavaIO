@@ -94,14 +94,13 @@ double doubleValue = in.nextDouble();
 ```
 
 ### .nextDoubleFast()
-Reads a double value ~3x times faster from the input stream than the .nextDouble() method, but at the cost of accuracy. This method can only read doubles with at most 21 digits after the decimal point. Furthermore, the value being read may have an error of at most ~5*10^-16 (obtained from empirical tests) from its true value due to finite floating point number arithmetic (adding, multiplication) used to perform the quick calculation.
+Reads a double value ~3x times faster from the input stream than the .nextDouble() method, but at the cost of accuracy. This method can only read doubles with at most 21 digits after the decimal point. Furthermore, the value being read may have an error of at most ~5*10^-16 (obtained from empirical tests) from its true value due to finite floating point number arithmetic (adding, multiplication) used to perform the quick read.
 ``` java
 InputReader in = new InputReader();
 double doubleValue = in.nextDoubleFast();
 ```
 ### .nextString()
-Reads a string of characters from the input stream. The delimiter separating a string of characters is set to be
-any ASCII value <= 32, meaning any spaces, new lines, EOF characters, tabs... all of which do not count as being part of the string. If the input stream is empty null is returned.
+Reads a string of characters from the input stream. The delimiter separating a string of characters is set to be any ASCII value <= 32, meaning any spaces, new lines, EOF characters, tabs... all of which do not count as being part of the string. If the input stream is empty null is returned.
 ``` java
 InputReader in = new InputReader();
 String str = in.nextString();
