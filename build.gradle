@@ -58,3 +58,13 @@ task buildDependenciesFolder(type: Copy) {
   from configurations.compile
   into './dependencies'
 }
+
+task compileInputReader(type: Exec) {
+  commandLine 'javac', (javaAlgorithmsPackage + '/InputReader.java')
+}
+
+// Creates fastjavaio jar file. Call with "$ gradle makeJar"
+task makeJar(type: Exec) {
+  dependsOn compileInputReader
+  commandLine 'jar', '-cvf', 'fastjavaio.jar', (javaAlgorithmsPackage + '/InputReader.class')
+}
