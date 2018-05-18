@@ -45,8 +45,8 @@ java -cp .;fastjavaio.jar MyApp       # Run application
 To actually use the InputReader class within your application you need to import it from within the fastjavaio package:
 
 ``` java
-// imports the InputReader class from the fastjavaio package
-import fastjavaio.InputReader;
+// imports the InputReader class
+import com.williamfiset.fastjavaio.InputReader;
 
 public class InputReaderUsageExample {
   public static void main (String[] args) throws java.io.IOException {
