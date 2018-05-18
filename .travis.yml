@@ -18,5 +18,5 @@ before_script:
 
 # Run maven tests and broken link check
 script:
-  - mvn clean verify
   - awesome_bot README.md --allow-dupe --allow-redirect
+  - gradle test
