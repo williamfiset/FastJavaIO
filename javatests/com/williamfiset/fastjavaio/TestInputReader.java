@@ -1,10 +1,11 @@
+package javatests.com.williamfiset.fastjavaio;
 
 import static org.junit.Assert.*;
+
+import com.williamfiset.fastjavaio.InputReader;
 import org.junit.*;
 import java.util.*;
 import java.io.*;
-
-import fastjavaio.InputReader;
 
 public class TestInputReader {
 
@@ -18,12 +19,12 @@ public class TestInputReader {
 
   @Test(expected=IllegalArgumentException.class)
   public void testIllegalBufferSz1() {
-    new InputReader( 0 );
+    new InputReader(0);
   }
 
   @Test(expected=IllegalArgumentException.class)
   public void testIllegalBufferSz2() {
-    new InputReader( -1 );
+    new InputReader(-1);
   }
 
   @Test

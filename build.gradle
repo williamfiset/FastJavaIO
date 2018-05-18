@@ -1,0 +1,60 @@
+
+apply plugin: 'java'
+
+// Assume Java 8
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+repositories {
+  mavenLocal()
+  mavenCentral()
+}
+
+dependencies {
+  // JUnit framework
+  testCompile 'junit:junit:4.+'
+  compile 'junit:junit:4.+'
+   
+  // Test mocking framework
+  testCompile "org.mockito:mockito-core:1.+"
+
+  // Google Guava lib
+  compile group: 'com.google.guava', name: 'guava', version: '22.0'
+
+  // Google truth API
+  compile "com.google.truth:truth:0.36"
+
+  // Apache commons lang
+  compile 'org.apache.commons:commons-lang3:3.6'
+}
+
+test {
+  dependsOn cleanTest
+  testLogging.showStandardStreams = true
+}
+
+String javaAlgorithmsPackage = "com/williamfiset/fastjavaio";
+String javatestsAlgorithmsPackage = "javatests/com/williamfiset/fastjavaio";
+
+sourceSets {
+  main {
+    java {
+      srcDirs = [
+        javaAlgorithmsPackage,
+      ]
+    }
+  }
+  test {
+    java {
+      srcDirs = [
+        javatestsAlgorithmsPackage,
+      ]
+    }
+  }
+}
+
+
+task buildDependenciesFolder(type: Copy) {
+  from configurations.compile
+  into './dependencies'
+}

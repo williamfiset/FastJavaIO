@@ -3,9 +3,10 @@
  * relative to Java's BufferedReader class
  * @author William Fiset
  **/
+package javatests.com.williamfiset.fastjavaio;
 
+import com.williamfiset.fastjavaio.InputReader;
 import java.io.*;
-import fastjavaio.InputReader;
 
 public class BenchMark {
 
@@ -13,9 +14,9 @@ public class BenchMark {
 
   final static int TRIALS = 20;
 
-  final static String INT_FILE = "../resources/integer_data/integers.txt";
-  final static String DOUBLE_FILE = "../resources/double_data/doubles.txt";
-  final static String STR_FILE = "../resources/string_data/short_strings_spaces.txt";
+  final static String INT_FILE = "resources/integer_data/integers.txt";
+  final static String DOUBLE_FILE = "resources/double_data/doubles.txt";
+  final static String STR_FILE = "resources/string_data/short_strings_spaces.txt";
 
   static void readFile_BufferedReader_readLine() throws IOException {
 

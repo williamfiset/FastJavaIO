@@ -6,8 +6,7 @@
  *
  * @author William Fiset, william.alexandre.fiset@gmail.com
  **/
-
-package fastjavaio;
+package com.williamfiset.fastjavaio;
 
 import java.io.InputStream;
 import java.io.IOException;
