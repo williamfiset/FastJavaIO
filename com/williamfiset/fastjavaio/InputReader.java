@@ -38,14 +38,23 @@ public class InputReader {
   
   private final InputStream stream;
 
-  private static final byte EOF   = -1; // End Of File (EOF) character
-  private static final byte NL    = 10; // '\n' - New Line (NL)
-  private static final byte SP    = 32; // ' '  - Space character (SP)
-  private static final byte DASH  = 45; // '-'  - Dash character (DASH)
-  private static final byte DOT   = 46; // '.'  - Dot character (DOT)
+  // End Of File (EOF) character
+  private static final byte EOF   = -1;
 
-  // A character buffer I reuse when reading string data.
-  private static char[] charBuffer = new char[128];
+  // New line character: '\n'
+  private static final byte NEW_LINE = 10;
+
+  // Space character: ' '
+  private static final byte SPACE = 32;
+
+  // Dash character: '-'
+  private static final byte DASH  = 45;
+
+  // Dot character: '.'
+  private static final byte DOT   = 46;
+
+  // A reusable character buffer when reading string data.
+  private char[] charBuffer;
 
   // Primitive data type lookup tables used for optimizations
   private static byte[] bytes = new byte[58];
@@ -105,6 +114,7 @@ public class InputReader {
     if (stream == null || bufferSize <= 0)
       throw new IllegalArgumentException();
     buf = new byte[bufferSize];
+    charBuffer = new char[128];
     this.bufferSize = bufferSize;
     this.stream = stream;
   }
@@ -184,7 +194,7 @@ public class InputReader {
     do {
 
       while(bufIndex < numBytesRead) {
-        if (buf[bufIndex] > SP) {
+        if (buf[bufIndex] > SPACE) {
           res = (res<<3)+(res<<1);
           res += ints[buf[bufIndex++]];
         } else {
@@ -218,7 +228,7 @@ public class InputReader {
     do {
 
       while(bufIndex < numBytesRead) {
-        if (buf[bufIndex] > SP) {
+        if (buf[bufIndex] > SPACE) {
           res = (res<<3)+(res<<1);
           res += ints[buf[bufIndex++]];
         } else {
@@ -255,7 +265,7 @@ public class InputReader {
   public String nextLine() throws IOException {
 
     try { c=read(); } catch (IOException e) { return null; }
-    if (c == NL) return ""; // Empty line
+    if (c == NEW_LINE) return ""; // Empty line
     if (c == EOF) return null; // EOF
     
     int i = 0;
@@ -264,7 +274,7 @@ public class InputReader {
     do {
 
       while(bufIndex < numBytesRead) {
-        if (buf[bufIndex] != NL) {
+        if (buf[bufIndex] != NEW_LINE) {
           if (i == charBuffer.length) doubleCharBufferSize();
           charBuffer[i++] = (char) buf[bufIndex++];
         } else {
@@ -289,13 +299,13 @@ public class InputReader {
   public String nextString() throws IOException {
 
     if (numBytesRead == EOF) return null;
-    if (readJunk(SP) == EOF) return null;
+    if (readJunk(SPACE) == EOF) return null;
     int i = 0;
 
     do {
 
       while(bufIndex < numBytesRead) {
-        if (buf[bufIndex] > SP) {
+        if (buf[bufIndex] > SPACE) {
           if (i == charBuffer.length) doubleCharBufferSize();
           charBuffer[i++] = (char) buf[bufIndex++];
         } else {
@@ -326,7 +336,7 @@ public class InputReader {
   // the decimal point and the reading my be as inaccurate as ~5*10^-16 from the true value.
   public double nextDoubleFast() throws IOException {
     c = read(); int sgn = 1;
-    while (c <= SP) c = read(); // while c is either: ' ', '\n', EOF
+    while (c <= SPACE) c = read(); // while c is either: ' ', '\n', EOF
     if (c == DASH) { sgn = -1; c = read(); }
     double res = 0.0;
     // while c is not: ' ', '\n', '.' or -1
@@ -334,7 +344,7 @@ public class InputReader {
     if (c == DOT) {
       int i = 0; c = read();
       // while c is digit and we are less than the maximum decimal precision
-      while (c > SP && i < MAX_DECIMAL_PRECISION) {
+      while (c > SPACE && i < MAX_DECIMAL_PRECISION) {
         res += doubles[ints[c]][i++]; c = read();
       }
     }
