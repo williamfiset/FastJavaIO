@@ -16,27 +16,27 @@ public class InputReader {
   /**
    * The default size of the InputReader's buffer is 2<sup>16</sup>.
    */
-  public static final int DEFAULT_BUFFER_SIZE = 1 << 16;
+  private static final int DEFAULT_BUFFER_SIZE = 1 << 16;
   
   /**
    * The default stream for the InputReader is standard input.
    */  
-  public static final InputStream DEFAULT_STREAM = System.in;
+  private static final InputStream DEFAULT_STREAM = System.in;
   
   /**
    * The maximum number of accurate decimal digits the method {@link #nextDoubleFast() nextDoubleFast()} can read.
    * Currently this value is set to 21 because it is the maximum number of digits a double precision float can have at the moment.
    */
-  public static final int MAX_DECIMAL_PRECISION = 21;
+  private static final int MAX_DECIMAL_PRECISION = 21;
   
   // 'c' is used to refer to the current character in the stream
   private int c;
   
   // Variables associated with the byte buffer. 
-  private final byte[] buf;
+  private byte[] buf;
   private int bufferSize, bufIndex, numBytesRead;
   
-  private final InputStream stream;
+  private InputStream stream;
 
   // End Of File (EOF) character
   private static final byte EOF   = -1;
@@ -141,7 +141,7 @@ public class InputReader {
   
   /**
    *  Read values from the input stream until you reach a character with a 
-   *  higher ASCII value than 'token'
+   *  higher ASCII value than 'token'.
    * @param token The token is a value which we use to stop reading junk out of
    * the stream.
    * @return Returns 0 if a value greater than the token was reached or -1 if
@@ -295,15 +295,12 @@ public class InputReader {
 
   // Reads a string of characters from the input stream. 
   // The delimiter separating a string of characters is set to be:
-  // any ASCII value <= 32 meaning any spaces, new lines, EOF, tabs ...
+  // any ASCII value <= 32 meaning any spaces, new lines, EOF, tabs...
   public String nextString() throws IOException {
-
     if (numBytesRead == EOF) return null;
     if (readJunk(SPACE) == EOF) return null;
-    int i = 0;
 
-    do {
-
+    for(int i = 0;;) {
       while(bufIndex < numBytesRead) {
         if (buf[bufIndex] > SPACE) {
           if (i == charBuffer.length) doubleCharBufferSize();
@@ -318,9 +315,7 @@ public class InputReader {
       numBytesRead = stream.read(buf);
       if (numBytesRead == EOF) return new String(charBuffer, 0, i);
       bufIndex = 0;
-
-    } while(true);
-
+    }
   }
 
   // Returns an exact value a double value from the input stream.
@@ -357,14 +352,6 @@ public class InputReader {
     for (int i = 0; i < n; i++) ar[i] = nextByte();
     return ar;
   }
-
-  // Read an array of n char values
-  // Buggy method must patch
-  // public char[] nextCharArray(int n) throws IOException {
-  //   String str = nextString();
-  //   if (str == null) return null;
-  //   return str.toCharArray();
-  // }
 
   // Read an integer array of size n
   public int[] nextIntArray(int n) throws IOException {
