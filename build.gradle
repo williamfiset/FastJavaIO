@@ -11,21 +11,21 @@ repositories {
 }
 
 dependencies {
-  // JUnit framework
-  testCompile 'junit:junit:4.+'
-  compile 'junit:junit:4.+'
+  // JUnit 5 / Jupiter
+  testImplementation('org.junit.jupiter:junit-jupiter:5.10.0')
+  testRuntimeOnly('org.junit.jupiter:junit-jupiter-engine:5.10.0')
    
   // Test mocking framework
-  testCompile "org.mockito:mockito-core:1.+"
+  testImplementation "org.mockito:mockito-core:5.+"
 
   // Google Guava lib
-  compile group: 'com.google.guava', name: 'guava', version: '22.0'
+  testImplementation group: 'com.google.guava', name: 'guava', version: '32.1.2-jre'
 
   // Google truth API
-  compile "com.google.truth:truth:0.36"
+  testImplementation "com.google.truth:truth:1.1.5"
 
   // Apache commons lang
-  compile 'org.apache.commons:commons-lang3:3.6'
+  implementation 'org.apache.commons:commons-lang3:3.13.0'
 }
 
 test {
@@ -33,38 +33,34 @@ test {
   testLogging.showStandardStreams = true
 }
 
-String javaAlgorithmsPackage = "com/williamfiset/fastjavaio";
-String javatestsAlgorithmsPackage = "javatests/com/williamfiset/fastjavaio";
-
-sourceSets {
-  main {
-    java {
-      srcDirs = [
-        javaAlgorithmsPackage,
-      ]
-    }
-  }
-  test {
-    java {
-      srcDirs = [
-        javatestsAlgorithmsPackage,
-      ]
-    }
-  }
+tasks.named('test', Test) {
+  useJUnitPlatform()
 }
 
+tasks.withType(JavaCompile) {
+  options.encoding = 'UTF-8'
+  options.compilerArgs += [
+    '-Xlint:unchecked',
+    '-Xlint:deprecation'
+  ]
+}
+
+// Options when compiling tests
+compileTestJava {
+  options.encoding = 'UTF-8'
+  options.compilerArgs += [
+    '-Xlint:unchecked',
+    '-Xlint:deprecation'
+  ]
+}
 
 task buildDependenciesFolder(type: Copy) {
-  from configurations.compile
+  from configurations.implementation
   into './dependencies'
 }
 
-task compileInputReader(type: Exec) {
-  commandLine 'javac', (javaAlgorithmsPackage + '/InputReader.java')
-}
-
 // Creates fastjavaio jar file. Call with "$ gradle makeJar"
-task makeJar(type: Exec) {
-  dependsOn compileInputReader
-  commandLine 'jar', '-cvf', 'fastjavaio.jar', (javaAlgorithmsPackage + '/InputReader.class')
+jar {
+  archiveBaseName = 'fastjavaio'
+  archiveVersion = '1.1'
 }
