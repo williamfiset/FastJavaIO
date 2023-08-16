@@ -3,9 +3,8 @@
  * relative to Java's BufferedReader class
  * @author William Fiset
  **/
-package javatests.com.williamfiset.fastjavaio;
+package com.williamfiset.fastjavaio;
 
-import com.williamfiset.fastjavaio.InputReader;
 import java.io.*;
 
 public class BenchMark {

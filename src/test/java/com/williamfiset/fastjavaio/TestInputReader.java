@@ -1,9 +1,8 @@
-package javatests.com.williamfiset.fastjavaio;
+package com.williamfiset.fastjavaio;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
-import com.williamfiset.fastjavaio.InputReader;
-import org.junit.*;
+import org.junit.jupiter.api.*;
 import java.util.*;
 import java.io.*;
 
@@ -17,14 +16,14 @@ public class TestInputReader {
     return new InputReader(is, bufferSize);
   }
 
-  @Test(expected=IllegalArgumentException.class)
+  @Test
   public void testIllegalBufferSz1() {
-    new InputReader(0);
+    assertThrows(IllegalArgumentException.class, () -> new InputReader(0));
   }
 
-  @Test(expected=IllegalArgumentException.class)
+  @Test
   public void testIllegalBufferSz2() {
-    new InputReader(-1);
+    assertThrows(IllegalArgumentException.class, () -> new InputReader(-1));
   }
 
   @Test
