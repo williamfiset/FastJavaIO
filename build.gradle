@@ -1,9 +1,12 @@
-
-apply plugin: 'java'
+plugins {
+  id 'java'
+}
 
 // Assume Java 8
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
+java {
+  sourceCompatibility = JavaVersion.VERSION_1_8
+  targetCompatibility = JavaVersion.VERSION_1_8
+}
 
 repositories {
   mavenLocal()
@@ -12,20 +15,20 @@ repositories {
 
 dependencies {
   // JUnit framework
-  testCompile 'junit:junit:4.+'
-  compile 'junit:junit:4.+'
-   
+  testImplementation 'junit:junit:4.+'
+  implementation 'junit:junit:4.+'
+
   // Test mocking framework
-  testCompile "org.mockito:mockito-core:1.+"
+  testImplementation "org.mockito:mockito-core:1.+"
 
   // Google Guava lib
-  compile group: 'com.google.guava', name: 'guava', version: '22.0'
+  implementation group: 'com.google.guava', name: 'guava', version: '22.0'
 
   // Google truth API
-  compile "com.google.truth:truth:0.36"
+  implementation "com.google.truth:truth:0.36"
 
   // Apache commons lang
-  compile 'org.apache.commons:commons-lang3:3.6'
+  implementation 'org.apache.commons:commons-lang3:3.6'
 }
 
 test {
@@ -55,7 +58,7 @@ sourceSets {
 
 
 task buildDependenciesFolder(type: Copy) {
-  from configurations.compile
+  from configurations.runtimeClasspath
   into './dependencies'
 }
 
