@@ -10,32 +10,30 @@ package com.williamfiset.fastjavaio;
 
 import java.io.InputStream;
 import java.io.IOException;
+import java.util.Arrays;
 
 public class InputReader {
-  
+
   /**
    * The default size of the InputReader's buffer is 2<sup>16</sup>.
    */
   private static final int DEFAULT_BUFFER_SIZE = 1 << 16;
-  
+
   /**
    * The default stream for the InputReader is standard input.
-   */  
+   */
   private static final InputStream DEFAULT_STREAM = System.in;
-  
+
   /**
    * The maximum number of accurate decimal digits the method {@link #nextDoubleFast() nextDoubleFast()} can read.
    * Currently this value is set to 21 because it is the maximum number of digits a double precision float can have at the moment.
    */
   private static final int MAX_DECIMAL_PRECISION = 21;
-  
-  // 'c' is used to refer to the current character in the stream
-  private int c;
-  
-  // Variables associated with the byte buffer. 
+
+  // Variables associated with the byte buffer.
   private byte[] buf;
   private int bufferSize, bufIndex, numBytesRead;
-  
+
   private InputStream stream;
 
   // End Of File (EOF) character
@@ -56,16 +54,11 @@ public class InputReader {
   // A reusable character buffer when reading string data.
   private char[] charBuffer;
 
-  // Primitive data type lookup tables used for optimizations
-  private static byte[] bytes = new byte[58];
-  private static  int[] ints  = new int[58];
-  private static char[] chars = new char[128];
+  // Digit lookup table used to map an ASCII digit ('0'..'9') to its int value.
+  private static final int[] ints = new int[58];
 
   static {
-    char ch = ' '; int value = 0; byte _byte = 0;
-    for (int i = 48; i <  58; i++ ) bytes[i] = _byte++;
-    for (int i = 48; i <  58; i++ )  ints[i] = value++;
-    for (int i = 32; i < 128; i++ ) chars[i] = ch++;
+    for (int i = 48; i < 58; i++) ints[i] = i - 48;
   }
 
   // Primitive double lookup table used for optimizations.
@@ -81,14 +74,14 @@ public class InputReader {
     { 0.8d,0.08d,0.008d,0.0008d,0.00008d,0.000008d,0.0000008d,0.00000008d,0.000000008d,0.0000000008d,0.00000000008d,0.000000000008d,0.0000000000008d,0.00000000000008d,0.000000000000008d,0.0000000000000008d,0.00000000000000008d,0.000000000000000008d,0.0000000000000000008d,0.00000000000000000008d,0.000000000000000000008d },
     { 0.9d,0.09d,0.009d,0.0009d,0.00009d,0.000009d,0.0000009d,0.00000009d,0.000000009d,0.0000000009d,0.00000000009d,0.000000000009d,0.0000000000009d,0.00000000000009d,0.000000000000009d,0.0000000000000009d,0.00000000000000009d,0.000000000000000009d,0.0000000000000000009d,0.00000000000000000009d,0.000000000000000000009d }
   };
-  
+
   /**
    * Create an InputReader that reads from standard input.
    */
   public InputReader () {
     this(DEFAULT_STREAM, DEFAULT_BUFFER_SIZE);
   }
-  
+
   /**
    * Create an InputReader that reads from standard input.
    * @param bufferSize    The buffer size for this input reader.
@@ -96,7 +89,7 @@ public class InputReader {
   public InputReader(int bufferSize) {
     this(DEFAULT_STREAM, bufferSize);
   }
-  
+
   /**
    * Create an InputReader that reads from standard input.
    * @param stream  Takes an InputStream as a parameter to read from.
@@ -118,10 +111,10 @@ public class InputReader {
     this.bufferSize = bufferSize;
     this.stream = stream;
   }
-  
+
   /**
    * Reads a single character from the input stream.
-   * @return Returns the byte value of the next character in the buffer and EOF 
+   * @return Returns the byte value of the next character in the buffer and EOF
    * at the end of the stream.
    * @throws IOException throws exception if there is no more data to read
    */
@@ -138,9 +131,9 @@ public class InputReader {
 
     return buf[bufIndex++];
   }
-  
+
   /**
-   *  Read values from the input stream until you reach a character with a 
+   *  Read values from the input stream until you reach a character with a
    *  higher ASCII value than 'token'.
    * @param token The token is a value which we use to stop reading junk out of
    * the stream.
@@ -148,13 +141,13 @@ public class InputReader {
    * the end of the stream was reached.
    * @throws IOException Throws exception at end of stream.
    */
-  private int readJunk(int token) throws IOException { 
-    
+  private int readJunk(int token) throws IOException {
+
     if (numBytesRead == EOF) return EOF;
 
     // Seek to the first valid position index
     do {
-      
+
       while(bufIndex < numBytesRead) {
         if (buf[bufIndex] > token) return 0;
         bufIndex++;
@@ -168,7 +161,7 @@ public class InputReader {
     } while(true);
 
   }
-  
+
   /**
    * Reads a single byte from the input stream.
    * @return The next byte in the input stream
@@ -177,18 +170,18 @@ public class InputReader {
   public byte nextByte() throws IOException {
     return (byte) nextInt();
   }
-  
+
   /**
    * Reads a 32 bit signed integer from input stream.
    * @return The next integer value in the stream.
    * @throws IOException Throws exception at end of stream.
    */
   public int nextInt() throws IOException {
-    
+
     if (readJunk(DASH-1) == EOF) throw new IOException();
     int sgn = 1, res = 0;
 
-    c = buf[bufIndex];
+    int c = buf[bufIndex];
     if (c == DASH) { sgn = -1; bufIndex++; }
 
     do {
@@ -218,11 +211,11 @@ public class InputReader {
    * @throws IOException Throws exception at end of stream.
    */
   public long nextLong() throws IOException {
-    
+
     if (readJunk(DASH-1) == EOF) throw new IOException();
     int sgn = 1;
     long res = 0L;
-    c = buf[bufIndex];
+    int c = buf[bufIndex];
     if (c == DASH) { sgn = -1; bufIndex++; }
 
     do {
@@ -245,29 +238,28 @@ public class InputReader {
     } while(true);
 
   }
-  
+
   /**
    * Doubles the size of the internal char buffer for strings
    */
   private void doubleCharBufferSize() {
-    char[] newBuffer = new char[charBuffer.length << 1];
-    for(int i = 0; i < charBuffer.length; i++) newBuffer[i] = charBuffer[i];
-    charBuffer = newBuffer;
+    charBuffer = Arrays.copyOf(charBuffer, charBuffer.length << 1);
   }
 
   /**
    * Reads a line from the input stream.
-   * @return Returns a line from the input stream in the form a String not 
-   * including the new line character. Returns <code>null</code> when there are 
-   * no more lines. 
+   * @return Returns a line from the input stream in the form a String not
+   * including the new line character. Returns <code>null</code> when there are
+   * no more lines.
    * @throws IOException Throws IOException when something terrible happens.
    */
   public String nextLine() throws IOException {
 
+    int c;
     try { c=read(); } catch (IOException e) { return null; }
     if (c == NEW_LINE) return ""; // Empty line
     if (c == EOF) return null; // EOF
-    
+
     int i = 0;
     charBuffer[i++] = (char)c;
 
@@ -293,7 +285,7 @@ public class InputReader {
 
   }
 
-  // Reads a string of characters from the input stream. 
+  // Reads a string of characters from the input stream.
   // The delimiter separating a string of characters is set to be:
   // any ASCII value <= 32 meaning any spaces, new lines, EOF, tabs...
   public String nextString() throws IOException {
@@ -322,7 +314,7 @@ public class InputReader {
   public double nextDouble() throws IOException {
     String doubleVal = nextString();
     if (doubleVal == null) throw new IOException();
-    return Double.valueOf(doubleVal);
+    return Double.parseDouble(doubleVal);
   }
 
   // Very quickly reads a double value from the input stream (~3x faster than nextDouble()). However,
@@ -330,7 +322,7 @@ public class InputReader {
   // of digits (~16+). In particular, it will only read double values with at most 21 digits after
   // the decimal point and the reading my be as inaccurate as ~5*10^-16 from the true value.
   public double nextDoubleFast() throws IOException {
-    c = read(); int sgn = 1;
+    int c = read(); int sgn = 1;
     while (c <= SPACE) c = read(); // while c is either: ' ', '\n', EOF
     if (c == DASH) { sgn = -1; c = read(); }
     double res = 0.0;
@@ -367,7 +359,7 @@ public class InputReader {
     return ar;
   }
 
-  // read an of doubles of size n 
+  // read an of doubles of size n
   public double[] nextDoubleArray(int n) throws IOException {
     double[] ar = new double[n];
     for (int i = 0; i < n; i++) ar[i] = nextDouble();
@@ -380,7 +372,7 @@ public class InputReader {
     for (int i = 0; i < n; i++) ar[i] = nextDoubleFast();
     return ar;
   }
-  
+
   // Read a string array of size n
   public String[] nextStringArray(int n) throws IOException {
     String[] ar = new String[n];
@@ -478,14 +470,14 @@ public class InputReader {
         matrix[i][j] = nextDoubleFast();
     return matrix;
   }
-  
+
   // Read a two dimensional matrix of Strings of size rows x cols
   public String[][] nextStringMatrix(int rows, int cols) throws IOException {
     String[][] matrix = new String[rows][cols];
     for(int i = 0; i < rows; i++)
       for (int j = 0; j < cols; j++)
         matrix[i][j] = nextString();
-    return matrix;    
+    return matrix;
   }
 
   // Read a 1-based two dimensional matrix of bytes of size rows x cols
@@ -532,14 +524,14 @@ public class InputReader {
         matrix[i][j] = nextDoubleFast();
     return matrix;
   }
-  
+
   // Read a 1-based two dimensional matrix of Strings of size rows x cols
   public String[][] nextStringMatrix1(int rows, int cols) throws IOException {
     String[][] matrix = new String[rows+1][cols+1];
     for(int i = 1; i <= rows; i++)
       for (int j = 1; j <= cols; j++)
         matrix[i][j] = nextString();
-    return matrix;    
+    return matrix;
   }
 
   // Closes the input stream
