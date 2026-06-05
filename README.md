@@ -1,6 +1,25 @@
-# InputReader
+# FastJavaIO
 
-The InputReader provides a way to read data from an input stream (like java.util.Scanner) but many orders of magnitude faster. Below is a graph outlining the speed differences between this InputReader verses using a BufferedReader (the Java Scanner was too slow to make it on the graph). To get started using the InputReader look at the examples below on how to read various types of data from an input stream. 
+**FastJavaIO** is a lightweight, dependency-free Java library for reading input *fast*. Its core is the `InputReader` class, a drop-in alternative to `java.util.Scanner` and `BufferedReader` that parses bytes directly off the stream to read integers, longs, doubles, strings, lines, arrays, and matrices many orders of magnitude faster.
+
+### What problem does it solve?
+
+Java's built-in I/O classes are convenient but slow. `java.util.Scanner` relies on regular expressions and is notoriously sluggish on large inputs, and even a hand-rolled `BufferedReader` still pays the cost of allocating `String`s and tokenizing them before you can parse a number. When a program needs to read tens of thousands — or millions — of values, this overhead dominates the runtime.
+
+This becomes painfully obvious in **competitive programming** (Codeforces, Kattis, ICPC, Google Code Jam, etc.), where solutions are judged against strict time limits and a correct algorithm can still time out purely because of slow input parsing. FastJavaIO was built to make that bottleneck disappear so you can spend your time budget on the actual problem.
+
+### How it achieves this
+
+Instead of reading characters, building `String` tokens, and then parsing them, `InputReader` works on a raw byte buffer:
+
+- Bytes are pulled from the underlying `InputStream` in large chunks (a 64&nbsp;KB buffer by default) to minimize system calls.
+- Numbers are parsed digit-by-digit straight from the buffer, avoiding intermediate `String` allocation and regex matching entirely.
+- An optional `nextDoubleFast()` trades a tiny amount of precision for roughly 3x faster double parsing.
+- Helpers read whole arrays and matrices in a single call, with both 0-based and 1-based variants.
+
+### Benchmark
+
+The graph below shows the read-speed difference between `InputReader` and a `BufferedReader` (`java.util.Scanner` was too slow to even make it onto the chart). Check out the [examples](#examples) below to get started reading various types of data from an input stream.
 
 ![Graph](https://raw.githubusercontent.com/williamfiset/FastJavaIO/master/images/graph.png)
 
