@@ -14,7 +14,7 @@ Instead of reading characters, building `String` tokens, and then parsing them, 
 
 - Bytes are pulled from the underlying `InputStream` in large chunks (a 64&nbsp;KB buffer by default) to minimize system calls.
 - Numbers are parsed digit-by-digit straight from the buffer, avoiding intermediate `String` allocation and regex matching entirely.
-- An optional `nextDoubleFast()` trades a tiny amount of precision for roughly 3x faster double parsing.
+- Doubles are parsed straight from the buffer with an exact fast path (falling back to `Double.parseDouble` only for unusual inputs), so `nextDouble()` is both exact and fast.
 - Helpers read whole arrays and matrices in a single call, with both 0-based and 1-based variants.
 
 ### Benchmark
@@ -106,14 +106,14 @@ long longValue = in.nextLong();
 ```
 
 ### .nextDouble()
-Reads a signed double from the input stream.
+Reads a signed double from the input stream. The result is always identical to `Double.parseDouble`; common inputs (at most ~15 significant digits and a small exponent) are parsed directly from the byte buffer without creating a `String`.
 ``` java
 InputReader in = new InputReader();
 double doubleValue = in.nextDouble();
 ```
 
 ### .nextDoubleFast()
-Reads a double value ~3x times faster from the input stream than the .nextDouble() method, but at the cost of accuracy. This method can only read doubles with at most 21 digits after the decimal point. Furthermore, the value being read may have an error of at most ~5*10^-16 (obtained from empirical tests) from its true value due to finite floating point number arithmetic (adding, multiplication) used to perform the quick read.
+For values with at most ~15 significant digits (most input) this is identical to .nextDouble(): same exact result, same speed. For values with 16 or more significant digits, such as the full precision output of `Double.toString`, .nextDouble() falls back to `Double.parseDouble` to stay exact, while .nextDoubleFast() stays on its fast path: about 2x faster, but the result may be off by 1 ulp.
 ``` java
 InputReader in = new InputReader();
 double doubleValue = in.nextDoubleFast();
