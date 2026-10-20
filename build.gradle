@@ -63,7 +63,7 @@ task buildDependenciesFolder(type: Copy) {
 }
 
 task compileInputReader(type: Exec) {
-  commandLine 'javac', (javaAlgorithmsPackage + '/InputReader.java')
+  commandLine 'javac', '--release', '8', '-Xlint:-options', (javaAlgorithmsPackage + '/InputReader.java')
 }
 
 // Creates fastjavaio jar file. Call with "$ gradle makeJar"
