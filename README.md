@@ -1,6 +1,6 @@
 # FastJavaIO
 
-**FastJavaIO** is a lightweight, dependency-free Java library for reading input *fast*. Its core is the `InputReader` class, a drop-in alternative to `java.util.Scanner` and `BufferedReader` that parses bytes directly off the stream to read integers, longs, doubles, strings, lines, arrays, and matrices many orders of magnitude faster.
+**FastJavaIO** is a lightweight, dependency-free Java library for reading input *fast*. Its core is the `InputReader` class, a fast alternative to `java.util.Scanner` and `BufferedReader` that parses bytes directly off the stream to read integers, longs, doubles, strings, lines, arrays, and matrices. Reading numbers from standard input is typically 3–5x faster than the usual `BufferedReader` + `split` approach (see the [benchmark](#benchmark) below).
 
 ### What problem does it solve?
 
@@ -22,6 +22,8 @@ Instead of reading characters, building `String` tokens, and then parsing them, 
 The graph below shows the read-speed difference between `InputReader` and a `BufferedReader` (`java.util.Scanner` was too slow to even make it onto the chart). Check out the [examples](#examples) below to get started reading various types of data from an input stream.
 
 ![Graph](https://raw.githubusercontent.com/williamfiset/FastJavaIO/master/images/graph.png)
+
+Each bar is the median of 7 runs, each in a fresh JVM, with the test data piped through standard input (Apple M4 Max, JDK 26). `BufferedReader` reads numbers with `readLine` + `split` + `Integer.parseInt` / `Double.parseDouble`; "String data" compares `InputReader.nextLine` with `BufferedReader.readLine`.
 
 ### Reading from an input stream
 
@@ -84,6 +86,11 @@ public class InputReaderUsageExample {
 
 **ALL methods in the InputReader class must be caught or thrown** because they throw an java.io.IOException when something bad happens such as trying to read a byte value from an empty stream. See [here](https://github.com/williamfiset/FastJavaIO#examples) for detailed examples of how to use the methods outlined below.
 
+**Input assumptions.** For speed, `InputReader` does no input validation and expects ASCII input:
+* Numbers are not checked. A malformed or out-of-range number silently produces a wrong value instead of an exception (see the overflow examples below).
+* Non-ASCII bytes are not decoded as UTF-8. `nextString()` treats them as separators, so `"café"` is read as `"caf"`, and `nextLine()` maps each byte to one character, so `"café"` is read as `"cafÃ©"`.
+* Windows line endings are not stripped: on `\r\n` input, `nextLine()` returns the line with a trailing `\r`.
+
 ### .nextByte()
 Reads a signed 8 bit integer from the input stream.
 ``` java
@@ -119,14 +126,14 @@ InputReader in = new InputReader();
 double doubleValue = in.nextDoubleFast();
 ```
 ### .nextString()
-Reads a string of characters from the input stream. The delimiter separating a string of characters is set to be any ASCII value <= 32, meaning any spaces, new lines, EOF characters, tabs... all of which do not count as being part of the string. If the input stream is empty null is returned.
+Reads a string of characters from the input stream. Strings are separated by any byte with an ASCII value <= 32 (spaces, tabs, new lines, carriage returns and other control characters), or by any non-ASCII byte; separators are never part of the string. Returns `null` when no more strings are left in the input stream.
 ``` java
 InputReader in = new InputReader();
 String str = in.nextString();
 ```
 
 ### .nextLine()
-Reads a line of characters from the input stream until a new line character is reached. The .nextLine() method includes spaces found in the input stream. If the input stream is empty a null value is returned to indicate so.
+Reads a line of characters from the input stream until a new line character (`\n`) is reached. The new line itself is not included, but spaces and any `\r` before it are. Returns `null` when no more lines are left in the input stream.
 ``` java
 InputReader in = new InputReader();
 String line = in.nextLine();
@@ -192,13 +199,44 @@ int stringsToRead = 16;
 String[] strings = in.nextStringArray(stringsToRead);
 ```
 
-**NOTE**: If you want to read data into a 1-based array instead of a 0-based array you can use the following methods exist for such a purpose:
+**NOTE**: If you want to read data into a 1-based array (of size n+1, with index 0 left unused) instead of a 0-based array, use the following methods:
 * nextByteArray1(int n)
 * nextIntArray1(int n)
 * nextLongArray1(int n)
 * nextDoubleArray1(int n)
 * nextDoubleArrayFast1(int n)
 * nextStringArray1(int n)
+
+Unlike `nextStringArray`, `nextStringArray1` does not throw when the input runs out: the remaining entries are left `null`.
+
+### .nextIntMatrix(int rows, int cols)
+
+Reads rows x cols signed 32 bit integers into a two dimensional array, row by row. If there are not enough integers in the input stream an exception is thrown.
+
+```java
+InputReader in = new InputReader();
+int[][] grid = in.nextIntMatrix(3, 4); // 3 rows, 4 columns
+```
+
+The same exists for the other types, each with a 1-based variant (of size (rows+1) x (cols+1), with row and column 0 left unused) ending in `1`:
+* nextByteMatrix(int rows, int cols), nextByteMatrix1(int rows, int cols)
+* nextIntMatrix(int rows, int cols), nextIntMatrix1(int rows, int cols)
+* nextLongMatrix(int rows, int cols), nextLongMatrix1(int rows, int cols)
+* nextDoubleMatrix(int rows, int cols), nextDoubleMatrix1(int rows, int cols)
+* nextDoubleMatrixFast(int rows, int cols), nextDoubleMatrixFast1(int rows, int cols)
+* nextStringMatrix(int rows, int cols), nextStringMatrix1(int rows, int cols)
+
+The string matrix methods do not throw when the input runs out: the remaining entries are left `null`.
+
+### .close()
+
+Closes the underlying input stream.
+
+```java
+InputReader in = new InputReader(new FileInputStream("/path/to/the/file"));
+// read input here...
+in.close();
+```
 
 ## Examples
 
@@ -242,7 +280,7 @@ byte b8 = in.nextByte(); // Nothing left in stream so an exception is thrown
 
 #### .nextInt() examples
 ``` java
-// Suppose standard input stream contains the following byte values we want to read:
+// Suppose standard input stream contains the following int values we want to read:
 "2147483647 -2147483648 34545 -1 -0 0 1 999999999999"
 //                                          ^ NOTE: This does NOT fit in a signed int!
 

@@ -77,16 +77,16 @@ public class InputReader {
   }
 
   /**
-   * Create an InputReader that reads from standard input.
-   * @param stream  Takes an InputStream as a parameter to read from.
+   * Create an InputReader that reads from the given stream.
+   * @param stream  The InputStream to read from.
    */
   public InputReader(InputStream stream) {
     this(stream, DEFAULT_BUFFER_SIZE);
   }
 
   /**
-   * Create an InputReader that reads from standard input.
-   * @param  stream        Takes an {@link java.io.InputStream#InputStream() InputStream} as a parameter to read from.
+   * Create an InputReader that reads from the given stream.
+   * @param  stream        The {@link java.io.InputStream InputStream} to read from.
    * @param  bufferSize    The size of the buffer to use.
    */
   public InputReader (InputStream stream, int bufferSize) {
@@ -164,8 +164,9 @@ public class InputReader {
   }
 
   /**
-   * Reads a single byte from the input stream.
-   * @return The next byte in the input stream
+   * Reads a signed 8 bit integer written as text (e.g. "-12") from the input stream.
+   * Values outside the byte range overflow silently.
+   * @return The next byte value in the stream.
    * @throws IOException Throws exception at end of stream.
    */
   public byte nextByte() throws IOException {
@@ -245,7 +246,7 @@ public class InputReader {
   /**
    * Reads a line from the input stream.
    * @return Returns a line from the input stream in the form a String not
-   * including the new line character. Returns <code>null</code> when there are
+   * including the new line character ('\n'). A '\r' before it is kept. Returns <code>null</code> when there are
    * no more lines.
    * @throws IOException Throws IOException when something terrible happens.
    */
@@ -269,7 +270,8 @@ public class InputReader {
 
   // Reads a string of characters from the input stream.
   // The delimiter separating a string of characters is set to be:
-  // any ASCII value <= 32 meaning any spaces, new lines, EOF, tabs...
+  // any ASCII value <= 32 meaning any spaces, new lines, tabs... or any non-ASCII byte
+  // (bytes are compared as signed values). Returns null at the end of the stream.
   public String nextString() throws IOException {
 
     if (readJunk(SPACE) == EOF) return null;
@@ -288,7 +290,7 @@ public class InputReader {
 
   }
 
-  // Returns an exact value a double value from the input stream.
+  // Reads a double from the input stream. The result is always identical to Double.parseDouble.
   public double nextDouble() throws IOException {
     return nextDouble(true);
   }
@@ -394,7 +396,7 @@ public class InputReader {
     return ar;
   }
 
-  // read an of doubles of size n
+  // Read a double array of size n
   public double[] nextDoubleArray(int n) throws IOException {
     double[] ar = new double[n];
     for (int i = 0; i < n; i++) ar[i] = nextDouble();
