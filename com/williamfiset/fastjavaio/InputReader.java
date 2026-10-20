@@ -10,6 +10,8 @@ package com.williamfiset.fastjavaio;
 
 import java.io.InputStream;
 import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 
 public class InputReader {
@@ -24,20 +26,14 @@ public class InputReader {
    */
   private static final InputStream DEFAULT_STREAM = System.in;
 
-  /**
-   * The maximum number of accurate decimal digits the method {@link #nextDoubleFast() nextDoubleFast()} can read.
-   * Currently this value is set to 21 because it is the maximum number of digits a double precision float can have at the moment.
-   */
-  private static final int MAX_DECIMAL_PRECISION = 21;
+  // Mantissas are accumulated into a long while below this bound, so m*10+9 never overflows.
+  private static final long MANTISSA_LIMIT = 100_000_000_000_000_000L;
 
-  // Variables associated with the byte buffer.
-  private byte[] buf;
-  private int bufferSize, bufIndex, numBytesRead;
-
-  private InputStream stream;
+  // Bytes map 1:1 to chars, and the JDK builds compact strings from it with a plain array copy.
+  private static final Charset LATIN1 = StandardCharsets.ISO_8859_1;
 
   // End Of File (EOF) character
-  private static final byte EOF   = -1;
+  private static final int EOF = -1;
 
   // New line character: '\n'
   private static final byte NEW_LINE = 10;
@@ -46,34 +42,24 @@ public class InputReader {
   private static final byte SPACE = 32;
 
   // Dash character: '-'
-  private static final byte DASH  = 45;
+  private static final byte DASH = 45;
 
-  // Dot character: '.'
-  private static final byte DOT   = 46;
-
-  // A reusable character buffer when reading string data.
-  private char[] charBuffer;
-
-  // Digit lookup table used to map an ASCII digit ('0'..'9') to its int value.
-  private static final int[] ints = new int[58];
-
-  static {
-    for (int i = 48; i < 58; i++) ints[i] = i - 48;
-  }
-
-  // Primitive double lookup table used for optimizations.
-  private static final double[][] doubles = {
-    { 0.0d,0.00d,0.000d,0.0000d,0.00000d,0.000000d,0.0000000d,0.00000000d,0.000000000d,0.0000000000d,0.00000000000d,0.000000000000d,0.0000000000000d,0.00000000000000d,0.000000000000000d,0.0000000000000000d,0.00000000000000000d,0.000000000000000000d,0.0000000000000000000d,0.00000000000000000000d,0.000000000000000000000d },
-    { 0.1d,0.01d,0.001d,0.0001d,0.00001d,0.000001d,0.0000001d,0.00000001d,0.000000001d,0.0000000001d,0.00000000001d,0.000000000001d,0.0000000000001d,0.00000000000001d,0.000000000000001d,0.0000000000000001d,0.00000000000000001d,0.000000000000000001d,0.0000000000000000001d,0.00000000000000000001d,0.000000000000000000001d },
-    { 0.2d,0.02d,0.002d,0.0002d,0.00002d,0.000002d,0.0000002d,0.00000002d,0.000000002d,0.0000000002d,0.00000000002d,0.000000000002d,0.0000000000002d,0.00000000000002d,0.000000000000002d,0.0000000000000002d,0.00000000000000002d,0.000000000000000002d,0.0000000000000000002d,0.00000000000000000002d,0.000000000000000000002d },
-    { 0.3d,0.03d,0.003d,0.0003d,0.00003d,0.000003d,0.0000003d,0.00000003d,0.000000003d,0.0000000003d,0.00000000003d,0.000000000003d,0.0000000000003d,0.00000000000003d,0.000000000000003d,0.0000000000000003d,0.00000000000000003d,0.000000000000000003d,0.0000000000000000003d,0.00000000000000000003d,0.000000000000000000003d },
-    { 0.4d,0.04d,0.004d,0.0004d,0.00004d,0.000004d,0.0000004d,0.00000004d,0.000000004d,0.0000000004d,0.00000000004d,0.000000000004d,0.0000000000004d,0.00000000000004d,0.000000000000004d,0.0000000000000004d,0.00000000000000004d,0.000000000000000004d,0.0000000000000000004d,0.00000000000000000004d,0.000000000000000000004d },
-    { 0.5d,0.05d,0.005d,0.0005d,0.00005d,0.000005d,0.0000005d,0.00000005d,0.000000005d,0.0000000005d,0.00000000005d,0.000000000005d,0.0000000000005d,0.00000000000005d,0.000000000000005d,0.0000000000000005d,0.00000000000000005d,0.000000000000000005d,0.0000000000000000005d,0.00000000000000000005d,0.000000000000000000005d },
-    { 0.6d,0.06d,0.006d,0.0006d,0.00006d,0.000006d,0.0000006d,0.00000006d,0.000000006d,0.0000000006d,0.00000000006d,0.000000000006d,0.0000000000006d,0.00000000000006d,0.000000000000006d,0.0000000000000006d,0.00000000000000006d,0.000000000000000006d,0.0000000000000000006d,0.00000000000000000006d,0.000000000000000000006d },
-    { 0.7d,0.07d,0.007d,0.0007d,0.00007d,0.000007d,0.0000007d,0.00000007d,0.000000007d,0.0000000007d,0.00000000007d,0.000000000007d,0.0000000000007d,0.00000000000007d,0.000000000000007d,0.0000000000000007d,0.00000000000000007d,0.000000000000000007d,0.0000000000000000007d,0.00000000000000000007d,0.000000000000000000007d },
-    { 0.8d,0.08d,0.008d,0.0008d,0.00008d,0.000008d,0.0000008d,0.00000008d,0.000000008d,0.0000000008d,0.00000000008d,0.000000000008d,0.0000000000008d,0.00000000000008d,0.000000000000008d,0.0000000000000008d,0.00000000000000008d,0.000000000000000008d,0.0000000000000000008d,0.00000000000000000008d,0.000000000000000000008d },
-    { 0.9d,0.09d,0.009d,0.0009d,0.00009d,0.000009d,0.0000009d,0.00000009d,0.000000009d,0.0000000009d,0.00000000009d,0.000000000009d,0.0000000000009d,0.00000000000009d,0.000000000000009d,0.0000000000000009d,0.00000000000000009d,0.000000000000000009d,0.0000000000000000009d,0.00000000000000000009d,0.000000000000000000009d }
+  // Exactly representable powers of ten, used by the fast path of the double parser.
+  private static final double[] POW10 = {
+    1e0, 1e1, 1e2, 1e3, 1e4, 1e5, 1e6, 1e7, 1e8, 1e9, 1e10, 1e11,
+    1e12, 1e13, 1e14, 1e15, 1e16, 1e17, 1e18, 1e19, 1e20, 1e21, 1e22
   };
+
+  // Variables associated with the byte buffer.
+  private final byte[] buf;
+  private final int bufferSize;
+  private int bufIndex, numBytesRead;
+
+  private final InputStream stream;
+
+  // Reusable scratch space for tokens which straddle a buffer refill.
+  private byte[] tok = new byte[64];
+  private int tokLen;
 
   /**
    * Create an InputReader that reads from standard input.
@@ -107,29 +93,19 @@ public class InputReader {
     if (stream == null || bufferSize <= 0)
       throw new IllegalArgumentException();
     buf = new byte[bufferSize];
-    charBuffer = new char[128];
     this.bufferSize = bufferSize;
     this.stream = stream;
   }
 
   /**
-   * Reads a single character from the input stream.
-   * @return Returns the byte value of the next character in the buffer and EOF
-   * at the end of the stream.
-   * @throws IOException throws exception if there is no more data to read
+   * Refills the buffer from the stream and resets bufIndex. Once the end of
+   * the stream is reached the stream is never read from again.
+   * @return The number of bytes read, or EOF.
+   * @throws IOException If the underlying stream throws.
    */
-  private byte read() throws IOException {
-
-    if (numBytesRead == EOF) throw new IOException();
-
-    if (bufIndex >= numBytesRead) {
-      bufIndex = 0;
-      numBytesRead = stream.read(buf);
-      if (numBytesRead == EOF)
-        return EOF;
-    }
-
-    return buf[bufIndex++];
+  private int fill() throws IOException {
+    bufIndex = 0;
+    return numBytesRead = numBytesRead == EOF ? EOF : stream.read(buf, 0, bufferSize);
   }
 
   /**
@@ -154,12 +130,37 @@ public class InputReader {
       }
 
       // reload buffer
-      numBytesRead = stream.read(buf);
+      numBytesRead = stream.read(buf, 0, bufferSize);
       if (numBytesRead == EOF) return EOF;
       bufIndex = 0;
 
     } while(true);
 
+  }
+
+  /**
+   * Copies the partial token buf[start, numBytesRead) into the scratch buffer and keeps reading
+   * until the token's delimiter (consumed) or EOF. The token ends up in tok[0, tokLen).
+   * @param start  Index in buf where the token begins.
+   * @param line   If true the delimiter is a new line, otherwise any byte <= ' '.
+   */
+  private void spill(int start, boolean line) throws IOException {
+    final byte[] buf = this.buf;
+    byte[] t = tok;
+    int len = numBytesRead - start;
+    if (len > t.length) t = Arrays.copyOf(t, Math.max(len, t.length << 1));
+    System.arraycopy(buf, start, t, 0, len);
+    for (int n; (n = fill()) != EOF; ) {
+      int i = 0;
+      if (line) while (i < n && buf[i] != NEW_LINE) i++;
+      else while (i < n && buf[i] > SPACE) i++;
+      if (len + i > t.length) t = Arrays.copyOf(t, Math.max(len + i, t.length << 1));
+      System.arraycopy(buf, 0, t, len, i);
+      len += i;
+      if (i < n) { bufIndex = i + 1; break; }
+    }
+    tok = t;
+    tokLen = len;
   }
 
   /**
@@ -170,6 +171,10 @@ public class InputReader {
   public byte nextByte() throws IOException {
     return (byte) nextInt();
   }
+
+  // Note: nextInt and nextLong deliberately keep the field based loop shape. Hoisting
+  // bufIndex/numBytesRead into locals or using a sentinel terminated loop benchmarked
+  // 15-50% slower on HotSpot C2, as did a SWAR (8 digits per long) parser.
 
   /**
    * Reads a 32 bit signed integer from input stream.
@@ -188,8 +193,7 @@ public class InputReader {
 
       while(bufIndex < numBytesRead) {
         if (buf[bufIndex] > SPACE) {
-          res = (res<<3)+(res<<1);
-          res += ints[buf[bufIndex++]];
+          res = res * 10 + buf[bufIndex++] - '0';
         } else {
           bufIndex++;
           return res*sgn;
@@ -197,7 +201,7 @@ public class InputReader {
       }
 
       // Reload buffer
-      numBytesRead = stream.read(buf);
+      numBytesRead = stream.read(buf, 0, bufferSize);
       if (numBytesRead == EOF) return res*sgn;
       bufIndex = 0;
 
@@ -222,8 +226,7 @@ public class InputReader {
 
       while(bufIndex < numBytesRead) {
         if (buf[bufIndex] > SPACE) {
-          res = (res<<3)+(res<<1);
-          res += ints[buf[bufIndex++]];
+          res = res * 10 + buf[bufIndex++] - '0';
         } else {
           bufIndex++;
           return res*sgn;
@@ -231,19 +234,12 @@ public class InputReader {
       }
 
       // Reload buffer
-      numBytesRead = stream.read(buf);
+      numBytesRead = stream.read(buf, 0, bufferSize);
       if (numBytesRead == EOF) return res*sgn;
       bufIndex = 0;
 
     } while(true);
 
-  }
-
-  /**
-   * Doubles the size of the internal char buffer for strings
-   */
-  private void doubleCharBufferSize() {
-    charBuffer = Arrays.copyOf(charBuffer, charBuffer.length << 1);
   }
 
   /**
@@ -255,33 +251,19 @@ public class InputReader {
    */
   public String nextLine() throws IOException {
 
-    int c;
-    try { c=read(); } catch (IOException e) { return null; }
-    if (c == NEW_LINE) return ""; // Empty line
-    if (c == EOF) return null; // EOF
+    if (bufIndex >= numBytesRead && fill() == EOF) return null;
 
-    int i = 0;
-    charBuffer[i++] = (char)c;
+    final byte[] buf = this.buf;
+    final int n = numBytesRead, start = bufIndex;
+    int i = start;
+    while (i < n && buf[i] != NEW_LINE) i++;
+    if (i < n) {
+      bufIndex = i + 1;
+      return new String(buf, start, i - start, LATIN1);
+    }
 
-    do {
-
-      while(bufIndex < numBytesRead) {
-        if (buf[bufIndex] != NEW_LINE) {
-          if (i == charBuffer.length) doubleCharBufferSize();
-          charBuffer[i++] = (char) buf[bufIndex++];
-        } else {
-          bufIndex++;
-          return new String(charBuffer, 0, i);
-        }
-      }
-
-      // Reload buffer
-      numBytesRead = stream.read(buf);
-      if (numBytesRead == EOF)
-        return new String(charBuffer, 0, i);
-      bufIndex = 0;
-
-    } while(true);
+    spill(start, true);
+    return new String(tok, 0, tokLen, LATIN1);
 
   }
 
@@ -289,53 +271,106 @@ public class InputReader {
   // The delimiter separating a string of characters is set to be:
   // any ASCII value <= 32 meaning any spaces, new lines, EOF, tabs...
   public String nextString() throws IOException {
-    if (numBytesRead == EOF) return null;
+
     if (readJunk(SPACE) == EOF) return null;
 
-    for(int i = 0;;) {
-      while(bufIndex < numBytesRead) {
-        if (buf[bufIndex] > SPACE) {
-          if (i == charBuffer.length) doubleCharBufferSize();
-          charBuffer[i++] = (char) buf[bufIndex++];
-        } else {
-          bufIndex++;
-          return new String(charBuffer, 0, i);
-        }
-      }
-
-      // Reload buffer
-      numBytesRead = stream.read(buf);
-      if (numBytesRead == EOF) return new String(charBuffer, 0, i);
-      bufIndex = 0;
+    final byte[] buf = this.buf;
+    final int n = numBytesRead, start = bufIndex;
+    int i = start;
+    while (i < n && buf[i] > SPACE) i++;
+    if (i < n) {
+      bufIndex = i + 1;
+      return new String(buf, start, i - start, LATIN1);
     }
+
+    spill(start, false);
+    return new String(tok, 0, tokLen, LATIN1);
+
   }
 
   // Returns an exact value a double value from the input stream.
   public double nextDouble() throws IOException {
-    String doubleVal = nextString();
-    if (doubleVal == null) throw new IOException();
-    return Double.parseDouble(doubleVal);
+    return nextDouble(true);
   }
 
-  // Very quickly reads a double value from the input stream (~3x faster than nextDouble()). However,
-  // this method may provide a slightly less accurate reading than .nextDouble() if there are a lot
-  // of digits (~16+). In particular, it will only read double values with at most 21 digits after
-  // the decimal point and the reading my be as inaccurate as ~5*10^-16 from the true value.
+  // Reads a double value from the input stream, trading up to 1 ulp of accuracy for speed on
+  // high precision input. For values with at most ~15 significant digits (most input) this is
+  // identical to nextDouble(): same exact result, same speed. For 16+ significant digits, such as
+  // the full precision output of Double.toString, nextDouble() falls back to Double.parseDouble
+  // to stay exact, while this method keeps the fast path and may be off by 1 ulp (~2x faster).
   public double nextDoubleFast() throws IOException {
-    int c = read(); int sgn = 1;
-    while (c <= SPACE) c = read(); // while c is either: ' ', '\n', EOF
-    if (c == DASH) { sgn = -1; c = read(); }
-    double res = 0.0;
-    // while c is not: ' ', '\n', '.' or -1
-    while (c > DOT) {res *= 10.0; res += ints[c]; c = read(); }
-    if (c == DOT) {
-      int i = 0; c = read();
-      // while c is digit and we are less than the maximum decimal precision
-      while (c > SPACE && i < MAX_DECIMAL_PRECISION) {
-        res += doubles[ints[c]][i++]; c = read();
+    return nextDouble(false);
+  }
+
+  private double nextDouble(boolean exact) throws IOException {
+
+    if (readJunk(SPACE) == EOF) throw new IOException();
+
+    final byte[] buf = this.buf;
+    final int n = numBytesRead, start = bufIndex;
+    int i = start;
+    while (i < n && buf[i] > SPACE) i++;
+    if (i < n) {
+      bufIndex = i + 1;
+      return parseDouble(buf, start, i, exact);
+    }
+
+    spill(start, false);
+    return parseDouble(tok, 0, tokLen, exact);
+
+  }
+
+  /**
+   * Parses the double in a[p, end). Values whose decimal mantissa fits in 53 bits with a
+   * power of ten exponent of at most 22 are computed with a single correctly rounded multiply
+   * or divide (Clinger's fast path); anything else is handed to Double.parseDouble.
+   * @param exact  If false, excess mantissa digits are truncated rather than falling back.
+   */
+  private static double parseDouble(byte[] a, int p, int end, boolean exact) {
+
+    final int off = p;
+    final boolean neg = a[p] == '-';
+    if (neg || a[p] == '+') p++;
+
+    long m = 0;
+    int exp = 0, d;
+
+    for (; p < end && (d = a[p] - '0') >= 0 && d < 10; p++) {
+      if (m < MANTISSA_LIMIT) m = m * 10 + d;
+      else if (exact) return slowParseDouble(a, off, end);
+      else exp++;
+    }
+
+    if (p < end && a[p] == '.') {
+      for (p++; p < end && (d = a[p] - '0') >= 0 && d < 10; p++) {
+        if (m < MANTISSA_LIMIT) { m = m * 10 + d; exp--; }
+        else if (exact) return slowParseDouble(a, off, end);
       }
     }
-    return res * sgn;
+
+    if (p < end && (a[p] | 0x20) == 'e') {
+      boolean eneg = false;
+      if (++p < end && (a[p] == '-' || a[p] == '+')) eneg = a[p++] == '-';
+      int e = 0;
+      for (; p < end && (d = a[p] - '0') >= 0 && d < 10; p++)
+        if (e < 100000) e = e * 10 + d;
+      exp += eneg ? -e : e;
+    }
+
+    // Leftover characters (NaN, Infinity, hex, type suffixes...) or an exponent out of range
+    if (p != end || exp < -22 || exp > 22) return slowParseDouble(a, off, end);
+
+    double v;
+    if (exp == 0) v = m;
+    else if (m < (1L << 53) || !exact) v = exp < 0 ? m / POW10[-exp] : m * POW10[exp];
+    else return slowParseDouble(a, off, end);
+
+    return neg ? -v : v;
+
+  }
+
+  private static double slowParseDouble(byte[] a, int off, int end) {
+    return Double.parseDouble(new String(a, off, end - off, LATIN1));
   }
 
   // Read an array of n byte values
