@@ -1,0 +1,29 @@
+name: README Link Check
+on:
+  push:
+    branches:
+    - master
+    paths:
+    - '.github/*'
+    - 'README.md'
+  pull_request:
+    branches:
+    - master
+    paths:
+    - '.github/*'
+    - 'README.md'
+
+jobs:
+  check:
+    name: Broken Link Check
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Ruby
+      uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: 2.4
+    - name: Install Awesome Bot
+      run: gem install awesome_bot
+    - name: Run Awesome Bot
+      run: awesome_bot README.md --allow-dupe --allow-redirect

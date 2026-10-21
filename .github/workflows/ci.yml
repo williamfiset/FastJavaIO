@@ -1,0 +1,35 @@
+name: CI
+
+on:
+  push:
+    branches:
+    - master
+  pull_request:
+    branches:
+    - master
+
+jobs:
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up JDK 8
+      uses: actions/setup-java@v3
+      with:
+        java-version: 8
+        distribution: 'temurin'
+    - name: Setup Gradle
+      uses: gradle/gradle-build-action@v2
+      with:
+        gradle-version: current
+        arguments: test
+
+    - name: Publish Test Results
+      if: ${{ always() }}
+      uses: mikepenz/action-junit-report@v3
+      with:
+        report_paths: "**/TEST-*.xml"
+        exclude_sources: build/
+        annotate_only: ${{ github.event_name == 'pull_request' }}
