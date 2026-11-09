@@ -25,22 +25,6 @@ tasks.withType(JavaCompile).configureEach {
   options.compilerArgs << '-Xlint:-options'
 }
 
-sourceSets {
-  main {
-    java {
-      // Sources live at the repo root (com/williamfiset/fastjavaio), so use the root as the
-      // source root and only include the library package.
-      srcDirs = ['.']
-      include 'com/williamfiset/fastjavaio/**/*.java'
-    }
-  }
-  test {
-    java {
-      srcDirs = ['javatests']
-    }
-  }
-}
-
 jar {
   archiveBaseName = 'fastjavaio'
 }
