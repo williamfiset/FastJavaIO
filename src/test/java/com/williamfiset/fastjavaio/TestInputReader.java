@@ -1,8 +1,7 @@
-package javatests.com.williamfiset.fastjavaio;
+package com.williamfiset.fastjavaio;
 
 import static org.junit.Assert.*;
 
-import com.williamfiset.fastjavaio.InputReader;
 import org.junit.*;
 import java.util.*;
 import java.io.*;

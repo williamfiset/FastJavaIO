@@ -1,34 +1,32 @@
 plugins {
-  id 'java'
+  id 'java-library'
 }
 
-// Assume Java 8
-java {
-  sourceCompatibility = JavaVersion.VERSION_1_8
-  targetCompatibility = JavaVersion.VERSION_1_8
-}
+group = 'io.github.williamfiset'
+version = '1.2'
 
 repositories {
-  mavenLocal()
   mavenCentral()
 }
 
 dependencies {
-  // JUnit framework
-  testImplementation 'junit:junit:4.+'
-  implementation 'junit:junit:4.+'
+  // FastJavaIO itself has no runtime dependencies; JUnit is only used by the tests.
+  testImplementation 'junit:junit:4.13.2'
+}
 
-  // Test mocking framework
-  testImplementation "org.mockito:mockito-core:1.+"
+java {
+  withSourcesJar()
+  withJavadocJar()
+}
 
-  // Google Guava lib
-  implementation group: 'com.google.guava', name: 'guava', version: '22.0'
+// Compile against the Java 8 API so the jar runs on any judge or JVM from Java 8 onward.
+tasks.withType(JavaCompile).configureEach {
+  options.release = 8
+  options.compilerArgs << '-Xlint:-options'
+}
 
-  // Google truth API
-  implementation "com.google.truth:truth:0.36"
-
-  // Apache commons lang
-  implementation 'org.apache.commons:commons-lang3:3.6'
+jar {
+  archiveBaseName = 'fastjavaio'
 }
 
 test {
@@ -36,38 +34,20 @@ test {
   testLogging.showStandardStreams = true
 }
 
-String javaAlgorithmsPackage = "com/williamfiset/fastjavaio";
-String javatestsAlgorithmsPackage = "javatests/com/williamfiset/fastjavaio";
+// Don't warn about undocumented members; still fail on malformed javadoc.
+javadoc {
+  options.addBooleanOption('Xdoclint:all,-missing', true)
+}
 
-sourceSets {
-  main {
-    java {
-      srcDirs = [
-        javaAlgorithmsPackage,
-      ]
-    }
+// Builds the standalone fastjavaio.jar in the repo root (the file attached to GitHub Releases).
+// Run with "./gradlew makeJar".
+tasks.register('makeJar') {
+  def builtJar = tasks.named('jar').flatMap { it.archiveFile }
+  def rootJar = layout.projectDirectory.file('fastjavaio.jar')
+  inputs.file(builtJar)
+  outputs.file(rootJar)
+  doLast {
+    java.nio.file.Files.copy(builtJar.get().asFile.toPath(), rootJar.asFile.toPath(),
+        java.nio.file.StandardCopyOption.REPLACE_EXISTING)
   }
-  test {
-    java {
-      srcDirs = [
-        javatestsAlgorithmsPackage,
-      ]
-    }
-  }
-}
-
-
-task buildDependenciesFolder(type: Copy) {
-  from configurations.runtimeClasspath
-  into './dependencies'
-}
-
-task compileInputReader(type: Exec) {
-  commandLine 'javac', '--release', '8', '-Xlint:-options', (javaAlgorithmsPackage + '/InputReader.java')
-}
-
-// Creates fastjavaio jar file. Call with "$ gradle makeJar"
-task makeJar(type: Exec) {
-  dependsOn compileInputReader
-  commandLine 'jar', '-cvf', 'fastjavaio.jar', (javaAlgorithmsPackage + '/InputReader.class')
 }
