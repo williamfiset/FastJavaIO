@@ -1,0 +1,41 @@
+name: Release
+
+# Publishing a GitHub Release (e.g. tag "1.3") publishes that version to
+# Maven Central and attaches fastjavaio.jar to the release.
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: write # upload the jar to the release
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: 21
+      - uses: gradle/actions/setup-gradle@v5
+
+      - name: Determine version from tag
+        id: version
+        run: echo "version=${GITHUB_REF_NAME#v}" >> "$GITHUB_OUTPUT"
+
+      - name: Test
+        run: ./gradlew test -PreleaseVersion=${{ steps.version.outputs.version }}
+
+      - name: Publish to Maven Central
+        run: ./gradlew publishToMavenCentral makeJar -PreleaseVersion=${{ steps.version.outputs.version }}
+        env:
+          ORG_GRADLE_PROJECT_mavenCentralUsername: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
+          ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ secrets.MAVEN_CENTRAL_PASSWORD }}
+          ORG_GRADLE_PROJECT_signingInMemoryKey: ${{ secrets.SIGNING_KEY }}
+          ORG_GRADLE_PROJECT_signingInMemoryKeyPassword: ${{ secrets.SIGNING_KEY_PASSWORD }}
+
+      - name: Attach fastjavaio.jar to the release
+        run: gh release upload "$GITHUB_REF_NAME" fastjavaio.jar --clobber
+        env:
+          GH_TOKEN: ${{ github.token }}

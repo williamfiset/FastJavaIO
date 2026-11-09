@@ -1,9 +1,11 @@
 plugins {
   id 'java-library'
+  id 'com.vanniktech.maven.publish' version '0.37.0'
 }
 
 group = 'io.github.williamfiset'
-version = '1.2'
+// Release builds pass -PreleaseVersion=<tag>; local builds are snapshots.
+version = providers.gradleProperty('releaseVersion').getOrElse('1.3-SNAPSHOT')
 
 repositories {
   mavenCentral()
@@ -12,11 +14,6 @@ repositories {
 dependencies {
   // FastJavaIO itself has no runtime dependencies; JUnit is only used by the tests.
   testImplementation 'junit:junit:4.13.2'
-}
-
-java {
-  withSourcesJar()
-  withJavadocJar()
 }
 
 // Compile against the Java 8 API so the jar runs on any judge or JVM from Java 8 onward.
@@ -49,5 +46,44 @@ tasks.register('makeJar') {
   doLast {
     java.nio.file.Files.copy(builtJar.get().asFile.toPath(), rootJar.asFile.toPath(),
         java.nio.file.StandardCopyOption.REPLACE_EXISTING)
+  }
+}
+
+// Maven Central publishing (sources and javadoc jars are added by the plugin).
+// Credentials come from Gradle properties / ORG_GRADLE_PROJECT_* env vars:
+//   mavenCentralUsername, mavenCentralPassword, signingInMemoryKey, signingInMemoryKeyPassword
+mavenPublishing {
+  publishToMavenCentral(true) // true = release automatically once validation passes
+  // Central requires signatures; skip signing for local builds that have no key.
+  if (providers.gradleProperty('signingInMemoryKey').isPresent()) {
+    signAllPublications()
+  }
+
+  coordinates(project.group.toString(), 'fastjavaio', project.version.toString())
+
+  pom {
+    name = 'FastJavaIO'
+    description = 'A lightweight, dependency-free, fast input reader for Java.'
+    inceptionYear = '2017'
+    url = 'https://github.com/williamfiset/FastJavaIO'
+    licenses {
+      license {
+        name = 'GNU General Public License v3.0'
+        url = 'https://www.gnu.org/licenses/gpl-3.0.txt'
+        distribution = 'repo'
+      }
+    }
+    developers {
+      developer {
+        id = 'williamfiset'
+        name = 'William Fiset'
+        url = 'https://github.com/williamfiset'
+      }
+    }
+    scm {
+      url = 'https://github.com/williamfiset/FastJavaIO'
+      connection = 'scm:git:git://github.com/williamfiset/FastJavaIO.git'
+      developerConnection = 'scm:git:ssh://git@github.com/williamfiset/FastJavaIO.git'
+    }
   }
 }
